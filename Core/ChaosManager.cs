@@ -24,6 +24,7 @@ namespace TerrariaChaosEditionUnleashed
             RANDOM_HEALTH_BARS,
             UNMISSABLE_CURSOR,
             NEARSIGHTED,
+            ENEMIES_STUN,
         }
 
         List<ChaosEffect> allEffects;
@@ -42,6 +43,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Random Health Bars", 100));
             allEffects.Add(new ChaosEffect("Unmissable Cursor", 100));
             allEffects.Add(new ChaosEffect("Nearsighted", 100));
+            allEffects.Add(new ChaosEffect("Enemies Stun!", 100));
             totalWeight = allEffects.Count * 100;
         }
 
@@ -56,6 +58,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects[5].weight = configCustom.RandomHealthBarsFxWeight;
             allEffects[6].weight = configCustom.UnmissableCursorFxWeight;
             allEffects[7].weight = configCustom.NearsightedFxWeight;
+            allEffects[8].weight = configCustom.EnemiesStunFxWeight;
             totalWeight = allEffects.Sum(fx => fx.weight);
         }
 

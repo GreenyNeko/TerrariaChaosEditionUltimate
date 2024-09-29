@@ -102,6 +102,11 @@ Configs: {
 			Label: Nearsighted Fx Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
+
+		EnemiesStunFxWeight: {
+			Label: Enemies Stun Fx Weight
+			Tooltip: "Works like lottery. Higher number = more entries"
+		}
 	}
 
 	ConfigSurvival.Tooltip: ""
