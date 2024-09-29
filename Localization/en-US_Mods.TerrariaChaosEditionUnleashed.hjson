@@ -4,22 +4,22 @@ Configs: {
 
 		gameMode: {
 			Label: Game Mode
-			Tooltip: "Sets the game mode to be selected"
+			Tooltip: Sets the game mode to be selected
 		}
 
 		ShowEffectOverHead: {
 			Label: Show Effect Over Head
-			Tooltip: "Whether or not the effect name should appear above player head when the effect gets activated"
+			Tooltip: Whether or not the effect name should appear above player head when the effect gets activated
 		}
 
 		ShowNextEffectInChat: {
 			Label: Show Next Effect In Chat
-			Tooltip: "Whether or not the name of the next effect and the time until its activation is shown in chat"
+			Tooltip: Whether or not the name of the next effect and the time until its activation is shown in chat
 		}
 
 		GameModeClassic: {
 			Label: Game Mode Classic
-			Tooltip: "Config for classic mode"
+			Tooltip: Config for classic mode
 		}
 
 		GameModeSurvival: {
@@ -29,81 +29,89 @@ Configs: {
 
 		GameModeChallenge: {
 			Label: Game Mode Challenge
-			Tooltip: "Config for challenge mode"
+			Tooltip: Config for challenge mode
 		}
 
 		GameModeCustom: {
 			Label: Game Mode Custom
-			Tooltip: "Config for custom mode"
+			Tooltip: Config for custom mode
 		}
 	}
 
-	ConfigClassic: {
-		Tooltip: "Classic Game Mode Config"
-
-	}
+	ConfigClassic.Tooltip: Classic Game Mode Config
 
 	ConfigCustom: {
-		Tooltip: "Custom Game Mode Config"
+		Tooltip: Custom Game Mode Config
 
 		effectCooldown: {
 			Label: effect Cooldown
-			Tooltip: "Time until the next effect in seconds"
+			Tooltip: Time until the next effect in seconds
 		}
 
 		effectCooldownRandomOffset: {
 			Label: effect Cooldown Random Offset
-			Tooltip: ""
+			Tooltip: Maximum variation of the time until the next effect in seconds
 		}
 
 		effectLength: {
 			Label: effect Length
-			Tooltip: "How long the effect is active"
+			Tooltip: How long the effect is active in seconds
 		}
 
 		effectLengthRandomOffset: {
 			Label: effect Length Random Offset
-			Tooltip: "The maximum variation in the length of the effect"
+			Tooltip: The maximum variation in the length of the effect in seconds
 		}
 
 		CrazyGravityFxWeight: {
 			Label: Crazy Gravity Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		AbominationFxWeight: {
 			Label: Abomination Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		TimeTravelFxWeight: {
 			Label: Time Travel Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		PainShiftsRealityFxWeight: {
 			Label: Pain Shifts Reality Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		HugeWorldFxWeight: {
 			Label: Huge World Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		RandomHealthBarsFxWeight: {
 			Label: Random Health Bars Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		UnmissableCursorFxWeight: {
 			Label: Unmissable Cursor Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		NearsightedFxWeight: {
 			Label: Nearsighted Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
 		}
+	}
+
+	ConfigSurvival.Tooltip: ""
+	ConfigChallenge.Tooltip: ""
+
+	GameMode: {
+		CUSTOM.Label: C U S T O M
+		CHALLENGE.Label: C H A L L E N G E
+		SURVIVAL.Label: S U R V I V A L
+		CLASSIC.Label: C L A S S I C
+		Tooltip: ""
 	}
 }
