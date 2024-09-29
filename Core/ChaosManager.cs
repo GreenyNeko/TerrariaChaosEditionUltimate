@@ -25,6 +25,7 @@ namespace TerrariaChaosEditionUnleashed
             UNMISSABLE_CURSOR,
             NEARSIGHTED,
             ENEMIES_STUN,
+            UP_OR_DIE,
         }
 
         List<ChaosEffect> allEffects;
@@ -44,6 +45,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Unmissable Cursor", 100));
             allEffects.Add(new ChaosEffect("Nearsighted", 100));
             allEffects.Add(new ChaosEffect("Enemies Stun!", 100));
+            allEffects.Add(new ChaosEffect("Up or die!", 100));
             totalWeight = allEffects.Count * 100;
         }
 
@@ -59,6 +61,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects[6].weight = configCustom.UnmissableCursorFxWeight;
             allEffects[7].weight = configCustom.NearsightedFxWeight;
             allEffects[8].weight = configCustom.EnemiesStunFxWeight;
+            allEffects[9].weight = configCustom.UpOrDieFxWeight;
             totalWeight = allEffects.Sum(fx => fx.weight);
         }
 
@@ -139,6 +142,16 @@ namespace TerrariaChaosEditionUnleashed
         public byte ReadMetaDataByte(int fxIdx, uint offset)
         {
             return allEffects[fxIdx].RetrieveMetaDataByte(offset);
+        }
+
+        public byte[] ReadMetaDataBytes(int fxIdx, uint offset, uint bytes)
+        {
+            return allEffects[fxIdx].RetrieveMetaDataBytes(offset, bytes);
+        }
+
+        public void WriteMetaDataBytes(int fxIdx, byte[] data, uint offset)
+        {
+            allEffects[fxIdx].StoreMetaDataBytes(data, offset);
         }
     }
 }

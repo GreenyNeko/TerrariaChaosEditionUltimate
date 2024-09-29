@@ -84,5 +84,31 @@ namespace TerrariaChaosEditionUnleashed
             }
             return data[offset];
         }
+
+        public void StoreMetaDataBytes(byte[] data, uint offset)
+        {
+            if (offset + data.Count() >= this.data.Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            for (uint i = 0; i < data.Count(); i++)
+            {
+                this.data[offset + i] = data[i];
+            }
+        }
+
+        public byte[] RetrieveMetaDataBytes(uint offset, uint bytes)
+        {
+            if(offset+bytes >= data.Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            byte[] ret = new byte[bytes];
+            for(uint i = 0; i < bytes; i++)
+            {
+                ret[i] = data[offset + i];
+            }
+            return ret;
+        }
     }
 }
