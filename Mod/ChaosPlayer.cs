@@ -48,7 +48,28 @@ namespace TerrariaChaosEditionUnleashed
                     }
                 }
             }
-            
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.UP_OR_DIE))
+            {
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.UP_OR_DIE))
+                {
+                    Main.NewText("Press UP to not die!");
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.UP_OR_DIE);
+                    chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.UP_OR_DIE, BitConverter.GetBytes(0f), 0);
+                }
+                byte done = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 4);
+                if(done == 0)
+                {
+                    byte[] timeData = chaosManager.ReadMetaDataBytes((int)ChaosManager.ChaosEffects.UP_OR_DIE, 0, 4);
+                    float time = BitConverter.ToSingle(timeData, 0);
+                    time += (float)deltaTime;
+                    if (time > 3)
+                    {
+                        Player.Hurt(PlayerDeathReason.ByOther(0), Player.statLifeMax2, 0, false, true, -1, false, 9999f, 9999f, 0f);
+                        chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 1, 4);
+                    }
+                    chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.UP_OR_DIE, BitConverter.GetBytes(time), 0);
+                }
+            }
             lastUpdate = Main.gameTimeCache.TotalGameTime.TotalSeconds;
         }
 
@@ -175,6 +196,18 @@ namespace TerrariaChaosEditionUnleashed
                     }
                 }
             }
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.UP_OR_DIE))
+            {
+                byte done = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 4);
+                if (done == 0)
+                {
+                    if (triggersSet.Up)
+                    {
+                        chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 1, 4);
+                    }
+                }
+            }
+
             base.ProcessTriggers(triggersSet);
         }
     }

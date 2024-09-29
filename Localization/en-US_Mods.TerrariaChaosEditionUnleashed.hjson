@@ -105,7 +105,12 @@ Configs: {
 
 		EnemiesStunFxWeight: {
 			Label: Enemies Stun Fx Weight
-			Tooltip: "Works like lottery. Higher number = more entries"
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		UpOrDieFxWeight: {
+			Label: Up Or Die Fx Weight
+			Tooltip: ""
 		}
 	}
 
