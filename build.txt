@@ -1,0 +1,3 @@
+displayName = Terraria: Chaos Edition! Unleashed
+author = GreenyNeko
+version = 0.1

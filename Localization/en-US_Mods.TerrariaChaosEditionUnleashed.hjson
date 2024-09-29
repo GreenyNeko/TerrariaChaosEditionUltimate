@@ -1,0 +1,109 @@
+Configs: {
+	ModConfigChaos: {
+		DisplayName: Chaos Edition Config
+
+		gameMode: {
+			Label: Game Mode
+			Tooltip: "Sets the game mode to be selected"
+		}
+
+		ShowEffectOverHead: {
+			Label: Show Effect Over Head
+			Tooltip: "Whether or not the effect name should appear above player head when the effect gets activated"
+		}
+
+		ShowNextEffectInChat: {
+			Label: Show Next Effect In Chat
+			Tooltip: "Whether or not the name of the next effect and the time until its activation is shown in chat"
+		}
+
+		GameModeClassic: {
+			Label: Game Mode Classic
+			Tooltip: "Config for classic mode"
+		}
+
+		GameModeSurvival: {
+			Label: Game Mode Survival
+			Tooltip: ""
+		}
+
+		GameModeChallenge: {
+			Label: Game Mode Challenge
+			Tooltip: "Config for challenge mode"
+		}
+
+		GameModeCustom: {
+			Label: Game Mode Custom
+			Tooltip: "Config for custom mode"
+		}
+	}
+
+	ConfigClassic: {
+		Tooltip: "Classic Game Mode Config"
+
+	}
+
+	ConfigCustom: {
+		Tooltip: "Custom Game Mode Config"
+
+		effectCooldown: {
+			Label: effect Cooldown
+			Tooltip: "Time until the next effect in seconds"
+		}
+
+		effectCooldownRandomOffset: {
+			Label: effect Cooldown Random Offset
+			Tooltip: ""
+		}
+
+		effectLength: {
+			Label: effect Length
+			Tooltip: "How long the effect is active"
+		}
+
+		effectLengthRandomOffset: {
+			Label: effect Length Random Offset
+			Tooltip: "The maximum variation in the length of the effect"
+		}
+
+		CrazyGravityFxWeight: {
+			Label: Crazy Gravity Fx Weight
+			Tooltip: ""
+		}
+
+		AbominationFxWeight: {
+			Label: Abomination Fx Weight
+			Tooltip: ""
+		}
+
+		TimeTravelFxWeight: {
+			Label: Time Travel Fx Weight
+			Tooltip: ""
+		}
+
+		PainShiftsRealityFxWeight: {
+			Label: Pain Shifts Reality Fx Weight
+			Tooltip: ""
+		}
+
+		HugeWorldFxWeight: {
+			Label: Huge World Fx Weight
+			Tooltip: ""
+		}
+
+		RandomHealthBarsFxWeight: {
+			Label: Random Health Bars Fx Weight
+			Tooltip: ""
+		}
+
+		UnmissableCursorFxWeight: {
+			Label: Unmissable Cursor Fx Weight
+			Tooltip: ""
+		}
+
+		NearsightedFxWeight: {
+			Label: Nearsighted Fx Weight
+			Tooltip: ""
+		}
+	}
+}
