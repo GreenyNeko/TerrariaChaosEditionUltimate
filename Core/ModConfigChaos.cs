@@ -76,6 +76,7 @@ namespace TerrariaChaosEditionUnleashed
             public int NearsightedFxWeight = 100;
             public int EnemiesStunFxWeight = 100;
             public int UpOrDieFxWeight = 100;
+            public int RandomItemDropFxWeight = 100;
         }
     }
 }

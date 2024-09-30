@@ -110,6 +110,11 @@ Configs: {
 
 		UpOrDieFxWeight: {
 			Label: Up Or Die Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomItemDropFxWeight: {
+			Label: Random Item Drop Fx Weight
 			Tooltip: ""
 		}
 	}

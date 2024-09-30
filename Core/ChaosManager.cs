@@ -26,6 +26,7 @@ namespace TerrariaChaosEditionUnleashed
             NEARSIGHTED,
             ENEMIES_STUN,
             UP_OR_DIE,
+            RAND_ITEM_DROP_FX,
         }
 
         List<ChaosEffect> allEffects;
@@ -46,6 +47,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Nearsighted", 100));
             allEffects.Add(new ChaosEffect("Enemies Stun!", 100));
             allEffects.Add(new ChaosEffect("Up or die!", 100));
+            allEffects.Add(new ChaosEffect("Random Item Drop FX", 100));
             totalWeight = allEffects.Count * 100;
         }
 
@@ -95,7 +97,7 @@ namespace TerrariaChaosEditionUnleashed
             switch(gameMode)
             {
                 case (int)ModConfigChaos.GameMode.CUSTOM:
-                    int roll = Main.rand.Next(totalWeight);
+                    int roll = Main.rand.Next(totalWeight) + 1;
                     for(int i = 0; i < allEffects.Count; i++)
                     {
                         roll -= allEffects[i].weight;
