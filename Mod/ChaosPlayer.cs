@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ModLoader;
+using Terraria.UI.Chat;
 using static TerrariaChaosEditionUnleashed.ChaosManager;
 
 namespace TerrariaChaosEditionUnleashed
@@ -17,9 +18,11 @@ namespace TerrariaChaosEditionUnleashed
         bool stunTooltipSeen = false;
         float stunThreshold = 0;
         float stunTime = 0;
+        float initialStunTime = 0;
         int lastInput = -1;
         double lastUpdate = 0;
         bool stunned = false;
+
         public override void PreUpdate()
         {
             double deltaTime = Main.gameTimeCache.TotalGameTime.TotalSeconds - lastUpdate;
@@ -35,6 +38,10 @@ namespace TerrariaChaosEditionUnleashed
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ENEMIES_STUN))
             {
+                if(stunThreshold > 0)
+                {
+                    stunThreshold -= (float)deltaTime;
+                }
                 if(stunTime > 0)
                 {
                     stunTime -= (float)deltaTime;
@@ -92,6 +99,38 @@ namespace TerrariaChaosEditionUnleashed
             }
         }
 
+        public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ENEMIES_STUN))
+            {
+                stunThreshold += MathF.Pow(hurtInfo.Knockback + 1f, 2);
+                if (stunTime > 0)
+                {
+                    stunTime += hurtInfo.Knockback;
+                    if (stunTime > initialStunTime)
+                    {
+                        initialStunTime = stunTime;
+                    }
+                }
+                else if (stunThreshold > 100)
+                {
+                    CombatText.NewText(Player.getRect(), Color.OrangeRed, "STUNNED!", true);
+                    if (!stunTooltipSeen)
+                    {
+                        stunTooltipSeen = true;
+                        Main.NewText("Hint: Tap left and right repeatedly to free yourself from the stun!");
+                    }
+                    stunned = true;
+                    hurtInfo.Knockback *= 5;
+                    stunTime = 7.5f + stunThreshold - 100;
+                    initialStunTime = stunTime;
+                    stunThreshold -= 100;
+                }
+            }
+            base.OnHitByNPC(npc, hurtInfo);
+        }
+
         public override void OnHurt(Player.HurtInfo info)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
@@ -99,27 +138,6 @@ namespace TerrariaChaosEditionUnleashed
             {
                 byte value = (byte)Main.rand.Next(8);
                 chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, value, 0);
-            }
-            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ENEMIES_STUN))
-            {
-                stunThreshold += MathF.Pow(info.Knockback + 1f, 2);
-                if(stunTime > 0)
-                {
-                    stunTime += info.Knockback;
-                }
-                else if(stunThreshold > 100)
-                {
-                    CombatText.NewText(Player.getRect(), Color.OrangeRed, "STUNNED!", true);
-                    if(!stunTooltipSeen)
-                    {
-                        stunTooltipSeen = true;
-                        Main.NewText("Hint: Tap left and right repeatedly to free yourself from the stun!");
-                    }
-                    stunned = true;
-                    info.Knockback *= 5;
-                    stunTime = 30;
-                    stunThreshold -= 100;
-                }
             }
             base.OnHurt(info);
         }
@@ -163,6 +181,10 @@ namespace TerrariaChaosEditionUnleashed
                 drawInfo.legVect = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 5)];
                 drawInfo.helmetOffset = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 6)];
                 drawInfo.legsOffset = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 7)];
+            }
+            if(stunTime > 0)
+            {
+                Main.instance.DrawHealthBar(Player.position.X, Player.position.Y + 20f, (int)stunTime, (int)initialStunTime, 1f);
             }
 
             base.ModifyDrawInfo(ref drawInfo);
