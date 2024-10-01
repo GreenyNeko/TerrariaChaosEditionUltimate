@@ -40,5 +40,24 @@ namespace TerrariaChaosEditionUnleashed
             
             return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
         }
+
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_NPC_SPRITES))
+            {
+                if(!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_NPC_SPRITES))
+                {
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_NPC_SPRITES);
+                    chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_NPC_SPRITES, (byte)Main.rand.Next(256), 0);
+                }
+                byte offset = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_NPC_SPRITES, 0);
+                int npcTextures = TextureAssets.Npc.Length;
+                Main.instance.LoadNPC((npc.type + offset) % npcTextures);
+                spriteBatch.Draw(TextureAssets.Npc[(npc.type + offset) % npcTextures].Value, npc.Center - screenPos, npc.frame, drawColor, npc.rotation, npc.frame.Size() / 2, npc.scale, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                return false;
+            }
+            return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
+        }
     }
 }

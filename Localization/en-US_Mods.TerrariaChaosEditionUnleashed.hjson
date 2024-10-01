@@ -127,6 +127,11 @@ Configs: {
 			Label: Random Item Icons Fx Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
+
+		RandomNPCSpritesFxWeight: {
+			Label: Random NPC Sprites Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
 	}
 
 	ConfigSurvival.Tooltip: ""

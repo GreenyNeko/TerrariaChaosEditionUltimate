@@ -29,6 +29,7 @@ namespace TerrariaChaosEditionUnleashed
             RAND_ITEM_DROP_FX,
             INVISIBLE_INVENTORY_ITEMS,
             RANDOM_ITEM_ICONS,
+            RANDOM_NPC_SPRITES,
         }
 
         List<ChaosEffect> allEffects;
@@ -52,6 +53,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Random Item Drop FX", 100));
             allEffects.Add(new ChaosEffect("Invisible Inventory Items", 100));
             allEffects.Add(new ChaosEffect("Random Item Icons", 100));
+            allEffects.Add(new ChaosEffect("Random NPC Sprites", 100));
             totalWeight = allEffects.Count * 100;
         }
 
@@ -71,6 +73,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects[10].weight = configCustom.RandomItemDropFxWeight;
             allEffects[11].weight = configCustom.InvisibleInventoryItemsFxWeight;
             allEffects[12].weight = configCustom.RandomItemIconsFxWeight;
+            allEffects[13].weight = configCustom.RandomNPCSpritesFxWeight;
             totalWeight = allEffects.Sum(fx => fx.weight);
         }
 

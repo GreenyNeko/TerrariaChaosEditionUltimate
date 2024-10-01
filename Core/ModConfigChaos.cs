@@ -79,6 +79,7 @@ namespace TerrariaChaosEditionUnleashed
             public int RandomItemDropFxWeight = 100;
             public int InvisibleInventoryItemsFxWeight = 100;
             public int RandomItemIconsFxWeight = 100;
+            public int RandomNPCSpritesFxWeight = 100;
         }
     }
 }
