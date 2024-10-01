@@ -115,7 +115,17 @@ Configs: {
 
 		RandomItemDropFxWeight: {
 			Label: Random Item Drop Fx Weight
-			Tooltip: ""
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		InvisibleInventoryItemsFxWeight: {
+			Label: Invisible Inventory Items Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomItemIconsFxWeight: {
+			Label: Random Item Icons Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 	}
 

@@ -27,6 +27,8 @@ namespace TerrariaChaosEditionUnleashed
             ENEMIES_STUN,
             UP_OR_DIE,
             RAND_ITEM_DROP_FX,
+            INVISIBLE_INVENTORY_ITEMS,
+            RANDOM_ITEM_ICONS,
         }
 
         List<ChaosEffect> allEffects;
@@ -48,6 +50,8 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Enemies Stun!", 100));
             allEffects.Add(new ChaosEffect("Up or die!", 100));
             allEffects.Add(new ChaosEffect("Random Item Drop FX", 100));
+            allEffects.Add(new ChaosEffect("Invisible Inventory Items", 100));
+            allEffects.Add(new ChaosEffect("Random Item Icons", 100));
             totalWeight = allEffects.Count * 100;
         }
 
@@ -64,6 +68,9 @@ namespace TerrariaChaosEditionUnleashed
             allEffects[7].weight = configCustom.NearsightedFxWeight;
             allEffects[8].weight = configCustom.EnemiesStunFxWeight;
             allEffects[9].weight = configCustom.UpOrDieFxWeight;
+            allEffects[10].weight = configCustom.RandomItemDropFxWeight;
+            allEffects[11].weight = configCustom.InvisibleInventoryItemsFxWeight;
+            allEffects[12].weight = configCustom.RandomItemIconsFxWeight;
             totalWeight = allEffects.Sum(fx => fx.weight);
         }
 

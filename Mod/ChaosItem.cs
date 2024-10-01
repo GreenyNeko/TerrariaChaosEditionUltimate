@@ -88,5 +88,28 @@ namespace TerrariaChaosEditionUnleashed
             
             return base.PreDrawInWorld(item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
         }
+
+        public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_ITEM_ICONS))
+            {
+                if(!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_ITEM_ICONS))
+                {
+                    chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_ITEM_ICONS, (byte)Main.rand.Next(256), 0);
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_ITEM_ICONS);
+                }
+                int itemTextures = Terraria.GameContent.TextureAssets.Item.Length; //+1 % itemTextures
+                int offset = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_ITEM_ICONS, 0);
+                Main.instance.LoadItem((item.type + offset) % itemTextures);
+                spriteBatch.Draw(Terraria.GameContent.TextureAssets.Item[(item.type + offset) % itemTextures].Value, position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0f);
+                return false;
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.INVISIBLE_INVENTORY_ITEMS))
+            {
+                return false;
+            }
+            return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+        }
     }
 }
