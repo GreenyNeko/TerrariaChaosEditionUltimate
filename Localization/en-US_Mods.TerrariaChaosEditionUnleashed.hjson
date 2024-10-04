@@ -132,6 +132,26 @@ Configs: {
 			Label: Random NPC Sprites Fx Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
+
+		ShimmeringFxWeight: {
+			Label: Shimmering Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		HotWaWaFxWeight: {
+			Label: Hot Wa Wa Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		TooltipMixUpFxWeight: {
+			Label: Tooltip Mix Up Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		BreakoutFxWeight: {
+			Label: Breakout Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
 	}
 
 	ConfigSurvival.Tooltip: ""

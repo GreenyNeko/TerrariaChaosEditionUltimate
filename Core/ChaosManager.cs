@@ -30,6 +30,10 @@ namespace TerrariaChaosEditionUnleashed
             INVISIBLE_INVENTORY_ITEMS,
             RANDOM_ITEM_ICONS,
             RANDOM_NPC_SPRITES,
+            SHIMMERING,
+            HOT_WAWA,
+            POPUP_MIX_UP,
+            BREAKOUT,
         }
 
         List<ChaosEffect> allEffects;
@@ -54,6 +58,10 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Invisible Inventory Items", 100));
             allEffects.Add(new ChaosEffect("Random Item Icons", 100));
             allEffects.Add(new ChaosEffect("Random NPC Sprites", 100));
+            allEffects.Add(new ChaosEffect("Shimmering", 100));
+            allEffects.Add(new ChaosEffect("Hot Wawa!", 100));
+            allEffects.Add(new ChaosEffect("Tooltip Mix Up", 100));
+            allEffects.Add(new ChaosEffect("Breakout", 100));
             totalWeight = allEffects.Count * 100;
         }
 
@@ -74,6 +82,10 @@ namespace TerrariaChaosEditionUnleashed
             allEffects[11].weight = configCustom.InvisibleInventoryItemsFxWeight;
             allEffects[12].weight = configCustom.RandomItemIconsFxWeight;
             allEffects[13].weight = configCustom.RandomNPCSpritesFxWeight;
+            allEffects[14].weight = configCustom.ShimmeringFxWeight;
+            allEffects[15].weight = configCustom.HotWaWaFxWeight;
+            allEffects[16].weight = configCustom.TooltipMixUpFxWeight;
+            allEffects[17].weight = configCustom.BreakoutFxWeight;
             totalWeight = allEffects.Sum(fx => fx.weight);
         }
 

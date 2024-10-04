@@ -28,6 +28,10 @@ namespace TerrariaChaosEditionUnleashed
             double deltaTime = Main.gameTimeCache.TotalGameTime.TotalSeconds - lastUpdate;
             base.PreUpdate();
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.SHIMMERING))
+            {
+                Player.ShimmerCollision(true, true, true);
+            }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY))
             {
                 Player.gravity = Main.rand.NextFloat() * 4f - 1.8f;
@@ -227,6 +231,29 @@ namespace TerrariaChaosEditionUnleashed
                     {
                         chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 1, 4);
                     }
+                }
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.BREAKOUT))
+            {
+                if (chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.BREAKOUT, 28) == 0)
+                {
+                    byte[] dataPaddleX = chaosManager.ReadMetaDataBytes((int)ChaosManager.ChaosEffects.BREAKOUT, 16, 4);
+                    int paddleX = BitConverter.ToInt32(dataPaddleX);
+                    if (triggersSet.Left)
+                    {
+                        if (paddleX - 1 > 0)
+                        {
+                            paddleX -= 8;
+                        }
+                    }
+                    else if (triggersSet.Right)
+                    {
+                        if (paddleX + 1 < Main.ScreenSize.X - 280 - 140)
+                        {
+                            paddleX += 8;
+                        }
+                    }
+                    chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.BREAKOUT, BitConverter.GetBytes(paddleX), 16);
                 }
             }
 
