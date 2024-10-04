@@ -283,10 +283,10 @@ namespace TerrariaChaosEditionUnleashed
                     spriteBatch.Draw(Terraria.GameContent.TextureAssets.Projectile[Terraria.ID.ProjectileID.Fireball].Value, new Rectangle(ballPosX - 20, ballPosY - 20, 40, 40), Color.White);
                     // paddle
                     Main.instance.LoadTiles(Terraria.ID.TileID.Grass);
-                    spriteBatch.Draw(Terraria.GameContent.TextureAssets.Tile[Terraria.ID.TileID.Grass].Value, new Rectangle(paddleX, Main.ScreenSize.Y - paddleY, paddleWidth, 40), new Rectangle(0, 0, 16, 16), Color.White, MathF.PI/2f);
+                    spriteBatch.Draw(Terraria.GameContent.TextureAssets.Tile[Terraria.ID.TileID.Grass].Value, new Rectangle(paddleX, Main.ScreenSize.Y - paddleY, paddleWidth, 40), new Rectangle(17, 0, 16, 16), Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0);
                     // block
                     Main.instance.LoadTiles(Terraria.ID.TileID.LivingWood);
-                    spriteBatch.Draw(Terraria.GameContent.TextureAssets.Tile[Terraria.ID.TileID.LivingWood].Value, new Rectangle(blockX, blockY, 60, 40), new Rectangle(0, 0, 16, 16), Color.Red);
+                    spriteBatch.Draw(Terraria.GameContent.TextureAssets.Tile[Terraria.ID.TileID.LivingWood].Value, new Rectangle(blockX, blockY, 60, 40), new Rectangle(17, 17, 16, 16), Color.Red);
                 }
                 
             }
