@@ -14,6 +14,7 @@ namespace TerrariaChaosEditionUnleashed
 {
     internal class ChaosProjectile : GlobalProjectile
     {
+        public override bool InstancePerEntity => true;
         // TODO: put them into ProjectileFxData
         Vector2 prevPos = Vector2.Zero;
         Vector2 subPixel = Vector2.Zero;
