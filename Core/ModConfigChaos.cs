@@ -29,6 +29,12 @@ namespace TerrariaChaosEditionUnleashed
         [SeparatePage]
         public class ConfigClassic
         {
+            public enum ClassicEffectSelection
+            {
+                ALL,
+                FEATURED
+            }
+            public ClassicEffectSelection classicEffectSelection;
             /*public enum Difficulty
             {
                 SAFE,       // only positive effects
@@ -84,6 +90,15 @@ namespace TerrariaChaosEditionUnleashed
             public int HotWaWaFxWeight = 100;
             public int TooltipMixUpFxWeight = 100;
             public int BreakoutFxWeight = 100;
+            public int RandomTooltipFxWeight = 100;
+            public int FlatrarriaFxWeight = 100;
+            public int RandomBuffUIFxWeight = 100;
+            //public int KowalskiAnalysisFxWeight = 100;
+            public int BrightNightFxWeight = 100;
+            //public int MinirarriaFxWeight = 100;
+            public int SevenYearsBadLuckFxWeight = 100;
+            public int DiscretizedMovementFxWeight = 100;
+            public int FakeEnemiesFxWeight = 100;
         }
     }
 }

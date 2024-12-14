@@ -11,6 +11,7 @@ namespace TerrariaChaosEditionUnleashed
     internal class ChaosEffect
     {
         public string effectName;
+        public string tags;
         public int weight;
         public byte[] data;
 
@@ -25,6 +26,17 @@ namespace TerrariaChaosEditionUnleashed
             data = new byte[128];
         }
 
+        public ChaosEffect AddTag(string tag)
+        {
+            tags += "," + tag;
+            return this;
+        }
+
+        public bool HasTag(string tag)
+        {
+            return tags.Contains(tag);
+        }
+
         public bool IsEnabled()
         {
             return active || duration > 0;
@@ -33,6 +45,11 @@ namespace TerrariaChaosEditionUnleashed
         public bool IsInitialDone()
         {
             return initialDone;
+        }
+
+        public float GetDurationLeft()
+        {
+            return MathF.Max(duration, 0);
         }
 
         public void Enable(float duration=-1)
@@ -61,6 +78,11 @@ namespace TerrariaChaosEditionUnleashed
         public void FlagInitialDone()
         {
             initialDone = true;
+        }
+
+        public void ResetInitialDoneFlag()
+        {
+            initialDone = false;
         }
 
         public void StoreMetaDataByte(byte data, uint offset)

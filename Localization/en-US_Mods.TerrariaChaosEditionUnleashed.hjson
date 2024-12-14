@@ -38,7 +38,14 @@ Configs: {
 		}
 	}
 
-	ConfigClassic.Tooltip: Classic Game Mode Config
+	ConfigClassic: {
+		Tooltip: Classic Game Mode Config
+
+		classicEffectSelection: {
+			Label: Effect Selection
+			Tooltip: Choose whether all effects or only the ~25 newest "featured" codes should be used.
+		}
+	}
 
 	ConfigCustom: {
 		Tooltip: Custom Game Mode Config
@@ -152,6 +159,51 @@ Configs: {
 			Label: Breakout Fx Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
+
+		RandomTooltipFxWeight: {
+			Label: Random Tooltip Fx Weight
+			Tooltip: ""
+		}
+
+		FlatrarriaFxWeight: {
+			Label: Flatrarria Fx Weight
+			Tooltip: ""
+		}
+
+		KowalskiAnalysisFxWeight: {
+			Label: Kowalski Analysis Fx Weight
+			Tooltip: ""
+		}
+
+		MinirarriaFxWeight: {
+			Label: Minirarria Fx Weight
+			Tooltip: ""
+		}
+
+		SevenYearsBadLuckFxWeight: {
+			Label: Seven Years Bad Luck Fx Weight
+			Tooltip: ""
+		}
+
+		DiscretizedMovementFxWeight: {
+			Label: Discretized Movement Fx Weight
+			Tooltip: ""
+		}
+
+		FakeEnemiesFxWeight: {
+			Label: Fake Enemies Fx Weight
+			Tooltip: ""
+		}
+
+		RandomBuffUIFxWeight: {
+			Label: Random Buff U I Fx Weight
+			Tooltip: ""
+		}
+
+		BrightNightFxWeight: {
+			Label: Bright Night Fx Weight
+			Tooltip: ""
+		}
 	}
 
 	ConfigSurvival.Tooltip: ""
@@ -163,5 +215,11 @@ Configs: {
 		SURVIVAL.Label: S U R V I V A L
 		CLASSIC.Label: C L A S S I C
 		Tooltip: ""
+	}
+
+	ClassicEffectSelection: {
+		Tooltip: ""
+		ALL.Label: A L L
+		FEATURED.Label: F E A T U R E D
 	}
 }
