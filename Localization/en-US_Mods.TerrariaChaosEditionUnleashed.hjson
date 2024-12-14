@@ -19,7 +19,7 @@ Configs: {
 
 		GameModeClassic: {
 			Label: Game Mode Classic
-			Tooltip: Config for classic mode
+			Tooltip: Config for classic mode, how basically every chaos edition works
 		}
 
 		GameModeSurvival: {
@@ -29,12 +29,12 @@ Configs: {
 
 		GameModeChallenge: {
 			Label: Game Mode Challenge
-			Tooltip: Config for challenge mode
+			Tooltip: Config for challenge mode, a mode where you play a preset of effects and settings
 		}
 
 		GameModeCustom: {
 			Label: Game Mode Custom
-			Tooltip: Config for custom mode
+			Tooltip: Config for custom mode, customize your own chaos!
 		}
 	}
 
@@ -71,143 +71,526 @@ Configs: {
 		}
 
 		CrazyGravityFxWeight: {
-			Label: Crazy Gravity Fx Weight
+			Label: Crazy Gravity Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		AbominationFxWeight: {
-			Label: Abomination Fx Weight
+			Label: Abomination Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		TimeTravelFxWeight: {
-			Label: Time Travel Fx Weight
+			Label: Time Travel Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		PainShiftsRealityFxWeight: {
-			Label: Pain Shifts Reality Fx Weight
+			Label: Pain Shifts Reality Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		HugeWorldFxWeight: {
-			Label: Huge World Fx Weight
+			Label: Huge World Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		RandomHealthBarsFxWeight: {
-			Label: Random Health Bars Fx Weight
+			Label: Random Health Bars Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		UnmissableCursorFxWeight: {
-			Label: Unmissable Cursor Fx Weight
+			Label: Unmissable Cursor Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		NearsightedFxWeight: {
-			Label: Nearsighted Fx Weight
+			Label: Nearsighted Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		EnemiesStunFxWeight: {
-			Label: Enemies Stun Fx Weight
+			Label: Enemies Stun Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		UpOrDieFxWeight: {
-			Label: Up Or Die Fx Weight
+			Label: Up Or Die Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		RandomItemDropFxWeight: {
-			Label: Random Item Drop Fx Weight
+			Label: Random Item Drop Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		InvisibleInventoryItemsFxWeight: {
-			Label: Invisible Inventory Items Fx Weight
+			Label: Invisible Inventory Items Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		RandomItemIconsFxWeight: {
-			Label: Random Item Icons Fx Weight
+			Label: Random Item Icons Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		RandomNPCSpritesFxWeight: {
-			Label: Random NPC Sprites Fx Weight
+			Label: Random NPC Sprites Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		ShimmeringFxWeight: {
-			Label: Shimmering Fx Weight
+			Label: Shimmering Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		HotWaWaFxWeight: {
-			Label: Hot Wa Wa Fx Weight
+			Label: Hot WaWa Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		TooltipMixUpFxWeight: {
-			Label: Tooltip Mix Up Fx Weight
+			Label: Tooltip Mix Up Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		BreakoutFxWeight: {
-			Label: Breakout Fx Weight
+			Label: Breakout Weight
 			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		RandomTooltipFxWeight: {
-			Label: Random Tooltip Fx Weight
-			Tooltip: ""
+			Label: Random Tooltip Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		FlatrarriaFxWeight: {
-			Label: Flatrarria Fx Weight
-			Tooltip: ""
+			Label: Flatrarria Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		KowalskiAnalysisFxWeight: {
-			Label: Kowalski Analysis Fx Weight
-			Tooltip: ""
+			Label: Kowalski Analysis Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		MinirarriaFxWeight: {
-			Label: Minirarria Fx Weight
-			Tooltip: ""
+			Label: Minirarria Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		SevenYearsBadLuckFxWeight: {
-			Label: Seven Years Bad Luck Fx Weight
-			Tooltip: ""
+			Label: Seven Years Bad Luck Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		DiscretizedMovementFxWeight: {
-			Label: Discretized Movement Fx Weight
-			Tooltip: ""
+			Label: Discretized Movement Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		FakeEnemiesFxWeight: {
-			Label: Fake Enemies Fx Weight
-			Tooltip: ""
+			Label: Fake Enemies Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		RandomBuffUIFxWeight: {
-			Label: Random Buff U I Fx Weight
-			Tooltip: ""
+			Label: Random Buff UI Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 
 		BrightNightFxWeight: {
-			Label: Bright Night Fx Weight
-			Tooltip: ""
+			Label: Bright Night Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ChangeHardmodeFxWeight: {
+			Label: Change Hardmode Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		SkipTimeFxWeight: {
+			Label: Skip Time Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		NoGravityFxWeight: {
+			Label: No Gravity Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomMusicFxWeight: {
+			Label: Random Music Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomSoundFxWeight: {
+			Label: Random Sound Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomNPCFxWeight: {
+			Label: Random NPC Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		NoCreativityFxWeight: {
+			Label: No Creativity Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomTeleportFxWeight: {
+			Label: Random Teleport Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		LifeManaSwapFxWeight: {
+			Label: Life Mana Swap Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		MagicMirrorFxWeight: {
+			Label: Magic Mirror Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RecoloredNPCsFxWeight: {
+			Label: Recolored NPCs Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomBuffFxWeight: {
+			Label: Random Buff Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomDebuffFxWeight: {
+			Label: Random Debuff Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomPetFxWeight: {
+			Label: Random Pet Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		HealingHurtsFxWeight: {
+			Label: Healing Hurts Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomChatMsg: {
+			Label: Random Chat Message Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomMonolithFxFxWeight: {
+			Label: Random Monolith Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		DangerousXRayFxWeight: {
+			Label: Dangerous X-Ray Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandTileConvert: {
+			Label: Random Tile Convert
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandNPCFxFxWeight: {
+			Label: Random NPC Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		MerryXMaxFxWeight: {
+			Label: Merry Christmas Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomEventFxWeight: {
+			Label: Random Event Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		NoFlyingAndWormingFxWeight: {
+			Label: No Flying & Worming Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		SmashBrosFxWeight: {
+			Label: Smash Bros Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ImmenseSpawnRateFxWeight: {
+			Label: Immense Spawn Rate Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		MaxLifeManaFxWeight: {
+			Label: Max Life Mana Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ButterFingersFxWeight: {
+			Label: Butter Fingers Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		InfiniteBugsFxWeight: {
+			Label: Infinite Bugs Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ShadowEnemiesFxWeight: {
+			Label: Shadow Enemies Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		NPCSpin2WinFxWeight: {
+			Label: NPC Spin 2 Win Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		UltimateBossFxWeight: {
+			Label: Ultimate Boss Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		WorldBlessingsFxWeight: {
+			Label: World Blessings Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		TalkingCreaturesFxWeight: {
+			Label: Talking Creatures Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RodOfDiscordFxWeight: {
+			Label: Rod Of Discord Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandProjFxFxWeight: {
+			Label: Random Projectile Effects Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		PlayerTornadoFxWeight: {
+			Label: Player Tornado Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		NPCGrowShrinkFxWeight: {
+			Label: NPC Grow Shrink Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		JungleGrowsFxWeight: {
+			Label: Jungle Grows Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		SwapPlacesFxWeight: {
+			Label: Swap Places Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ExplosiveDeathFxWeight: {
+			Label: Explosive Death Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandEnemeyFxIIFxWeight: {
+			Label: Rand Enemey Effects II Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		SonicHealthFxWeight: {
+			Label: Sonic Health Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		UpsideDownFxWeight: {
+			Label: Upside Down Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomCraftFxWeight: {
+			Label: Random Craft Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomTileFxfxWeight: {
+			Label: Random Tile Effects Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RecoloredTilesFxWeight: {
+			Label: Recolored Tiles Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		AccumulatingVelocityFxWeight: {
+			Label: Accumulating Velocity Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		VerifyHumanFxWeight: {
+			Label: Verify Human Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		NonBinaryGenderFxWeight: {
+			Label: Non-Binary Gender Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandLifeManaFxWeight: {
+			Label: Random Life Mana Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		CursedByLuckFxWeight: {
+			Label: Cursed By Luck Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		BigWeaponsFxWeight: {
+			Label: Big Weapons Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ItemsGoHamFxWeight: {
+			Label: Items Go Ham Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		HalloHalloweenFxWeight: {
+			Label: Hallo Halloween Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandNumberFxFxWeight: {
+			Label: Random Number Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ReinforcementsFxWeight: {
+			Label: Reinforcements Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		InvertedEnemiesFxWeight: {
+			Label: Inverted Enemies Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		AlwaysWetFxWeight: {
+			Label: Always Wet Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		DarknessEnsuesFxWeight: {
+			Label: Darkness Ensues Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		InverseDeBuffFxWeight: {
+			Label: Inverse De Buff Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomCreditzFxWeight: {
+			Label: Random Creditz Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		FakePickupFxWeight: {
+			Label: Fake Pickup Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomAudioPitchesFxWeight: {
+			Label: Random Audio Pitches Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		AprilWeatherFxWeight: {
+			Label: April Weather Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		SpookyGhostFxWeight: {
+			Label: Spooky Ghost Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		OldSchoolCamFxWeight: {
+			Label: Old School Cam Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		PlayerSolarSystemFxWeight: {
+			Label: Player Solar System Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ReadableUIFxWeight: {
+			Label: Readable UI Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		WeirdLightingFxWeight: {
+			Label: Weird Lighting Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		GraveyardShiftFxWeight: {
+			Label: Graveyard Shift Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomPylonFxFxWeight: {
+			Label: Random Pylon Fx Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandProjFxIIFxWeight: {
+			Label: Random Projectiles Effects II Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		FallSensitivityFxWeight: {
+			Label: Fall Sensitivity Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		RandomTileFxIIFxWeight: {
+			Label: Random Tile Effects II Weight
+			Tooltip: Works like lottery. Higher number = more entries
+		}
+
+		ChaosMusicFxWeight: {
+			Label: Chaos Music Weight
+			Tooltip: Works like lottery. Higher number = more entries
 		}
 	}
 
 	ConfigSurvival.Tooltip: ""
-	ConfigChallenge.Tooltip: ""
+
+	ConfigChallenge: {
+		Tooltip: ""
+
+		challengeSelection: {
+			Label: Challenge
+			Tooltip: Select a challenge preset
+		}
+	}
 
 	GameMode: {
 		CUSTOM.Label: C U S T O M
@@ -221,5 +604,12 @@ Configs: {
 		Tooltip: ""
 		ALL.Label: A L L
 		FEATURED.Label: F E A T U R E D
+	}
+
+	ChallengeSelection: {
+		Tooltip: ""
+		ORIGINAL.Label: O R I G I N A L
+		TELEPORTATION.Label: T E L E P O R T A T I O N
+		MINIGAMES.Label: M I N I G A M E S
 	}
 }
