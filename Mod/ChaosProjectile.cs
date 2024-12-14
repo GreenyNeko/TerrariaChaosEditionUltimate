@@ -14,6 +14,11 @@ namespace TerrariaChaosEditionUnleashed
 {
     internal class ChaosProjectile : GlobalProjectile
     {
+        // TODO: put them into ProjectileFxData
+        Vector2 prevPos = Vector2.Zero;
+        Vector2 subPixel = Vector2.Zero;
+        Vector2 vanillaVel = Vector2.Zero;
+        Vector2 effectVel = Vector2.Zero;
         public override void SetDefaults(Projectile entity)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
@@ -61,6 +66,34 @@ namespace TerrariaChaosEditionUnleashed
             {
                 Vector2 velDiff = projectile.velocity - projectile.oldVelocity;
                 projectile.velocity += velDiff * 0.05f;
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.DISCRETIZED_MOVEMENT))
+            {
+                // TODO: which of these vars do we want to store in the effect?
+                // get vanilla vel
+                vanillaVel = projectile.velocity - effectVel;
+                // remove effect vel from previous subpixel boost
+                projectile.velocity = vanillaVel;
+                Vector2 playerPos = projectile.position;
+                Vector2 roundedPos = new Vector2(MathF.Round(playerPos.X / 16f) * 16, MathF.Round(playerPos.Y / 16f) * 16);
+                // fix to ground
+                roundedPos.Y += 6;
+                subPixel += projectile.position - roundedPos;
+                projectile.position = roundedPos;
+                Vector2 newVel = Vector2.Zero;
+                if (MathF.Abs(subPixel.X) >= 16)
+                {
+                    newVel.X = MathF.Sign(subPixel.X) * 16;
+                    subPixel.X = 0;
+                }
+                if (MathF.Abs(subPixel.Y) >= 16)
+                {
+                    newVel.Y = MathF.Sign(subPixel.Y) * 16;
+                    subPixel.Y = 0;
+                }
+                effectVel = newVel;
+                projectile.velocity = vanillaVel + effectVel;
+                prevPos = roundedPos;
             }
             base.PostAI(projectile);
         }

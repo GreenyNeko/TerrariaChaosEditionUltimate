@@ -22,6 +22,11 @@ namespace TerrariaChaosEditionUnleashed
         float timeInWorld;
         double lastUpdate = 0;
         int overridenType = 0;
+        // TODO: put them into ItemFxData
+        Vector2 prevPos = Vector2.Zero;
+        Vector2 subPixel = Vector2.Zero;
+        Vector2 vanillaVel = Vector2.Zero;
+        Vector2 effectVel = Vector2.Zero;
 
         public override void OnSpawn(Item item, IEntitySource source)
         {
@@ -68,6 +73,46 @@ namespace TerrariaChaosEditionUnleashed
             }
             base.Update(item, ref gravity, ref maxFallSpeed);
             lastUpdate = Main.gameTimeCache.TotalGameTime.TotalSeconds;
+        }
+
+        public override void PostUpdate(Item item)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ACCUMULATING_VELOCITY))
+            {
+                Vector2 velDiff = item.velocity - item.oldVelocity;
+                // 2x velocity change
+                item.velocity += velDiff * 0.05f;
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.DISCRETIZED_MOVEMENT))
+            {
+                // TODO: which of these vars do we want to store in the effect?
+                // get vanilla vel
+                vanillaVel = item.velocity - effectVel;
+                // remove effect vel from previous subpixel boost
+                item.velocity = vanillaVel;
+                Vector2 playerPos = item.position;
+                Vector2 roundedPos = new Vector2(MathF.Round(playerPos.X / 16f) * 16, MathF.Round(playerPos.Y / 16f) * 16);
+                // fix to ground
+                roundedPos.Y += 6;
+                subPixel += item.position - roundedPos;
+                item.position = roundedPos;
+                Vector2 newVel = Vector2.Zero;
+                if (MathF.Abs(subPixel.X) >= 16)
+                {
+                    newVel.X = MathF.Sign(subPixel.X) * 16;
+                    subPixel.X = 0;
+                }
+                if (MathF.Abs(subPixel.Y) >= 16)
+                {
+                    newVel.Y = MathF.Sign(subPixel.Y) * 16;
+                    subPixel.Y = 0;
+                }
+                effectVel = newVel;
+                item.velocity = vanillaVel + effectVel;
+                prevPos = roundedPos;
+            }
+            base.PostUpdate(item);
         }
 
         public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
