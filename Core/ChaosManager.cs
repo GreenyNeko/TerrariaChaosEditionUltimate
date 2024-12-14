@@ -66,6 +66,7 @@ namespace TerrariaChaosEditionUnleashed
             RECOLORED_TILES,
             ACCUMULATING_VELOCITY,
             VERIFY_HUMAN,
+            NON_BINARY_GENDER,
             // v3 25/25
             RAND_LIFE_MANA,
             CURSED_BY_LUCK,
@@ -187,6 +188,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Recolored Tiles!", 100).AddTag("legacy").AddTag("v2"));
             allEffects.Add(new ChaosEffect("Accumulating Velocity!", 100).AddTag("legacy").AddTag("v2"));
             allEffects.Add(new ChaosEffect("Verify Human", 100).AddTag("legacy").AddTag("v2").AddTag("minigame"));
+            allEffects.Add(new ChaosEffect("Non-binary Gender", 100).AddTag("legacy").AddTag("v2"));
             //v3
             allEffects.Add(new ChaosEffect("Randomize Life & Mana", 100).AddTag("legacy").AddTag("v3"));
             allEffects.Add(new ChaosEffect("Cursed by Luck", 100).AddTag("legacy").AddTag("v3"));

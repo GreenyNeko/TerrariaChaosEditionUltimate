@@ -318,6 +318,10 @@ namespace TerrariaChaosEditionUnleashed
                     Player.extraFall -= 25;
                 }
             }
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NON_BINARY_GENDER))
+            {
+                Player.Male = Main.rand.NextBool();
+            }
             lastUpdate = Main.gameTimeCache.TotalGameTime.TotalSeconds;
         }
 
@@ -752,7 +756,6 @@ namespace TerrariaChaosEditionUnleashed
                     chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.BREAKOUT, BitConverter.GetBytes(paddleX), 16);
                 }
             }
-
             base.ProcessTriggers(triggersSet);
         }
     }
