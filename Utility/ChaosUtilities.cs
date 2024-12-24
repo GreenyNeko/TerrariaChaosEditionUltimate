@@ -14,10 +14,10 @@ namespace TerrariaChaosEditionUnleashed.Utility
      */
     public static class ChaosUtilities
     {
-        public static Dictionary<int,int> reverseBuff = new Dictionary<int, int>(){{BuffID.Regeneration, BuffID.Poisoned}, {BuffID.Poisoned, BuffID.Regeneration},
+        public static readonly Dictionary<int,int> reverseBuff = new Dictionary<int, int>(){{BuffID.Regeneration, BuffID.Poisoned}, {BuffID.Poisoned, BuffID.Regeneration},
             {BuffID.RapidHealing, BuffID.Venom}, {BuffID.Venom, BuffID.RapidHealing}, {BuffID.OnFire, BuffID.Regeneration }, { BuffID.OnFire3, BuffID.RapidHealing },
             { BuffID.Darkness, BuffID.NightOwl }, { BuffID.NightOwl, BuffID.Darkness }, { BuffID.Daybreak, BuffID.RapidHealing }, { BuffID.Swiftness, BuffID.Slow},
-            { BuffID.MagicPower, BuffID.ManaSickness }, { BuffID.ManaSickness, BuffID.MagicPower }, { BuffID.HeartLamp, BuffID.Poisoned }, { BuffID.Ironskin, BuffID.BrokenArmor },
+            { BuffID.ManaSickness, BuffID.MagicPower }, { BuffID.HeartLamp, BuffID.Poisoned }, { BuffID.Ironskin, BuffID.BrokenArmor }, {BuffID.Silenced, BuffID.MagicPower},
             { BuffID.Frostburn, BuffID.Regeneration }, { BuffID.Frostburn2, BuffID.RapidHealing }, { BuffID.Sharpened, BuffID.Weak }, { BuffID.Weak, BuffID.Sharpened },
             { BuffID.MagicPower, BuffID.Silenced }, { BuffID.Rage, BuffID.WitheredWeapon }, { BuffID.CursedInferno, BuffID.RapidHealing },{ BuffID.Ichor, BuffID.Ironskin },
             { BuffID.BrokenArmor, BuffID.Endurance }, { BuffID.BeetleEndurance1, BuffID.Ironskin }, { BuffID.BeetleEndurance2, BuffID.BrokenArmor }, 
@@ -28,7 +28,7 @@ namespace TerrariaChaosEditionUnleashed.Utility
             { BuffID.Battle, BuffID.Calm }, { BuffID.Blackout, BuffID.NightOwl }, {BuffID.OgreSpit, BuffID.Swiftness}
         };
 
-        public static int[] goodBuffs = { BuffID.ObsidianSkin, BuffID.Regeneration, BuffID.Swiftness, BuffID.Gills, BuffID.Ironskin, BuffID.ManaRegeneration, BuffID.MagicPower, BuffID.Featherfall,
+        public static readonly int[] goodBuffs = { BuffID.ObsidianSkin, BuffID.Regeneration, BuffID.Swiftness, BuffID.Gills, BuffID.Ironskin, BuffID.ManaRegeneration, BuffID.MagicPower, BuffID.Featherfall,
             BuffID.Spelunker, BuffID.Invisibility, BuffID.Shine, BuffID.NightOwl, BuffID.Battle, BuffID.Thorns, BuffID.WaterWalking, BuffID.Archery, BuffID.Hunter, BuffID.Gravitation,
             BuffID.ShadowOrb, BuffID.WellFed, BuffID.FairyBlue, BuffID.Werewolf, BuffID.Clairvoyance, BuffID.Merfolk, BuffID.PaladinsShield, BuffID.Honey, BuffID.Pygmies, BuffID.TikiSpirit,
             BuffID.Wisp, BuffID.RapidHealing, BuffID.ShadowDodge, BuffID.LeafCrystal, BuffID.IceBarrier, BuffID.Panic, BuffID.WeaponImbueVenom, BuffID.WeaponImbueCursedFlames,
@@ -56,7 +56,7 @@ namespace TerrariaChaosEditionUnleashed.Utility
             BuffID.AbigailMinion, BuffID.HeartyMeal, BuffID.FartMinecartLeft, BuffID.FartMinecartRight, BuffID.CoolWhipPlayerBuff, BuffID.WolfMount, BuffID.BiomeSight,
             BuffID.TerraFartMinecartLeft, BuffID.TerraFartMinecartRight, BuffID.WarTable,
         };
-        public static int[] badBuffs = { BuffID.Poisoned, BuffID.PotionSickness, BuffID.Darkness, BuffID.Cursed, BuffID.OnFire, BuffID.Tipsy, BuffID.Bleeding, BuffID.Confused, BuffID.Slow, BuffID.Weak,
+        public static readonly int[] badBuffs = { BuffID.Poisoned, BuffID.PotionSickness, BuffID.Darkness, BuffID.Cursed, BuffID.OnFire, BuffID.Tipsy, BuffID.Bleeding, BuffID.Confused, BuffID.Slow, BuffID.Weak,
             BuffID.Silenced, BuffID.BrokenArmor, BuffID.Horrified, BuffID.TheTongue, BuffID.CursedInferno, BuffID.Frostburn, BuffID.Chilled, BuffID.Frozen, BuffID.Burning, BuffID.Suffocation,
             BuffID.Ichor, BuffID.Venom, BuffID.Midas, BuffID.Blackout, BuffID.WaterCandle, BuffID.ChaosState, BuffID.ManaSickness, BuffID.Wet, BuffID.Lovestruck, BuffID.Stinky, BuffID.Slimed,
             BuffID.Electrified, BuffID.MoonLeech, BuffID.Rabies, BuffID.Webbed, BuffID.ShadowFlame, BuffID.Stoned, BuffID.Dazed, BuffID.Obstructed, BuffID.VortexDebuff, BuffID.BoneJavelin,
@@ -65,7 +65,7 @@ namespace TerrariaChaosEditionUnleashed.Utility
             BuffID.ThornWhipNPCDebuff, BuffID.RainbowWhipNPCDebuff, BuffID.MaceWhipNPCDebuff, BuffID.GelBalloonBuff, BuffID.BrainOfConfusionBuff, BuffID.OnFire3, BuffID.Frostburn2,
             BuffID.BoneWhipNPCDebuff, BuffID.NeutralHunger, BuffID.Hunger, BuffID.Starving, BuffID.TentacleSpike, BuffID.BloodButcherer, BuffID.ShadowCandle, BuffID.Shimmer,
         };
-        public static int[] petsBuffs = { BuffID.PetBunny, BuffID.BabyPenguin, BuffID.PetTurtle, BuffID.BabyEater, BuffID.BabySkeletronHead, BuffID.BabyHornet, BuffID.PetLizard, BuffID.PetParrot,
+        public static readonly int[] petsBuffs = { BuffID.PetBunny, BuffID.BabyPenguin, BuffID.PetTurtle, BuffID.BabyEater, BuffID.BabySkeletronHead, BuffID.BabyHornet, BuffID.PetLizard, BuffID.PetParrot,
             BuffID.BabyTruffle, BuffID.PetSapling, BuffID.BabyDinosaur, BuffID.BabySlime, BuffID.EyeballSpring, BuffID.BabySnowman, BuffID.PetSpider, BuffID.Squashling, BuffID.Ravens,
             BuffID.BlackCat, BuffID.CursedSapling, BuffID.Rudolph, BuffID.Puppy, BuffID.BabyGrinch, BuffID.ZephyrFish, BuffID.MiniMinotaur, BuffID.BabyFaceMonster, BuffID.CompanionCube,
             BuffID.PetDD2Gato, BuffID.PetDD2Ghost, BuffID.PetDD2Dragon, BuffID.SugarGlider, BuffID.SharkPup, BuffID.UpbeatStar, BuffID.LilHarpy, BuffID.FennecFox, BuffID.GlitteryButterfly,

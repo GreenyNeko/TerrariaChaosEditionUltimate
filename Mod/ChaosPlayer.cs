@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -37,22 +38,60 @@ namespace TerrariaChaosEditionUnleashed
         {
             On_Player.WaterCollision += OnPlayerWaterCollision;
             On_Player.OverheadMessage.NewMessage += OverheadMessage_NewMessage;
+            On_Player.HealEffect += On_Player_HealEffect;
+            On_Player.ApplyLifeAndOrMana += On_Player_ApplyLifeAndOrMana;
+        }
+
+        private void On_Player_ApplyLifeAndOrMana(On_Player.orig_ApplyLifeAndOrMana orig, Player self, Item item)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.HEALING_HURTS))
+            {
+                if (item.healLife > 0)
+                {
+                    self.Hurt(PlayerDeathReason.ByPlayerItem(0, item), item.healLife * 2, 0);
+                }
+            }
+            orig.Invoke(self, item);
+        }
+
+        private void On_Player_HealEffect(On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.HEALING_HURTS))
+            {
+                 healAmount = 0;
+            }
+            orig.Invoke(self, healAmount, broadcast);
+        }
+
+        private void On_Player_Heal(On_Player.orig_Heal orig, Player self, int amount)
+        {
+            // isn't triggered?
+            orig.Invoke(self, amount);
         }
 
         private void OverheadMessage_NewMessage(On_Player.OverheadMessage.orig_NewMessage orig, ref Player.OverheadMessage self, string message, int displayTime)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
-            if (chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.VERIFY_HUMAN))
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.VERIFY_HUMAN))
             {
                 byte success = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, 0);
                 byte[] wordData = chaosManager.ReadMetaDataBytes((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, 1, 6);
-                string word = Encoding.Default.GetString(wordData);
+                string word = Encoding.ASCII.GetString(wordData);
                 if (word == message)
                 {
                     chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, 1, 0);
                 }
             }
             orig.Invoke(ref self, message, displayTime);
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.VERIFY_HUMAN))
+            {
+                if(chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, 0) == 1)
+                {
+                    Main.NewText("You have successfully confirmed to be human!");
+                }
+            }
         }
 
         private void OnPlayerWaterCollision(On_Player.orig_WaterCollision orig, Player self, bool fallThrough, bool ignorePlats)
@@ -90,6 +129,41 @@ namespace TerrariaChaosEditionUnleashed
         {
         }
 
+        public override void ResetEffects()
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            base.ResetEffects();
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NO_CREATIVITY))
+            {
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.NO_CREATIVITY))
+                {
+                    Player.AddBuff(BuffID.NoBuilding, (int)(chaosManager.GetEffectDuration((int)ChaosManager.ChaosEffects.NO_CREATIVITY) * 30));
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.NO_CREATIVITY);
+                }
+                Player.noBuilding = true;
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX))
+            {
+                byte fx = 0;
+                bool[] monolith = { false, false, false, false, false, false, false };
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX))
+                {
+                    fx = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX, 0);
+                    chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX, (byte)Main.rand.Next(6), 0);
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX);
+                }
+                fx = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX, 0);
+                monolith[fx] = true;
+                Player.bloodMoonMonolithShader = monolith[0];
+                Player.moonLordMonolithShader = monolith[1];
+                Player.nebulaMonolithShader = monolith[2];
+                Player.shimmerMonolithShader = monolith[3];
+                Player.solarMonolithShader = monolith[4];
+                Player.stardustMonolithShader = monolith[5];
+                Player.vortexMonolithShader = monolith[6];
+            }
+        }
+
         public override void PreUpdate()
         {
             double deltaTime = Main.gameTimeCache.TotalGameTime.TotalSeconds - lastUpdate;
@@ -101,15 +175,36 @@ namespace TerrariaChaosEditionUnleashed
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY))
             {
-                Player.gravity = Main.rand.NextFloat() * 4f - 1.8f;
+                if(!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY))
+                {
+                    chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY, BitConverter.GetBytes(0f), 0);
+                    chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY, BitConverter.GetBytes(0f), 4);
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY);
+                }
+                byte[] timeData = chaosManager.ReadMetaDataBytes((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY, 0, 4);
+                float time = BitConverter.ToSingle(timeData, 0);
+                if(time <= 0)
+                {
+                    float roll = Main.rand.NextFloat();
+                    if (roll < 0.5)
+                    {
+                        Player.gravity = 0.4f*(roll*2f);
+                    }
+                    else
+                    {
+                        Player.gravity = 0.4f + (roll - 0.5f) * 2 * 10;
+                    }
+                    time = Main.rand.NextFloat() * 1.5f + 1.5f;
+                    chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY, BitConverter.GetBytes(Player.gravity), 4);
+                }
+                time -= (float)deltaTime;
+                chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY, BitConverter.GetBytes(time), 0);
+                byte[] gravityData = chaosManager.ReadMetaDataBytes((int)ChaosManager.ChaosEffects.CRAZY_GRAVITY, 4, 4);
+                Player.gravity = BitConverter.ToSingle(gravityData);
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NO_GRAVITY))
             {
                 Player.gravity = 0;
-            }
-            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NO_CREATIVITY))
-            {
-                Player.noBuilding = true;
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_TELEPORT))
             {
@@ -119,21 +214,21 @@ namespace TerrariaChaosEditionUnleashed
                     chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_TELEPORT);
                 }
             }
-            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
-            {
-                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
-                {
-                    int temp = Player.statLifeMax;
-                    Player.statLifeMax = Player.statManaMax;
-                    Player.statManaMax = temp;
-                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP);
-                }
-            }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.MAGIC_MIRROR))
             {
                 if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.MAGIC_MIRROR))
                 {
+                    SoundEngine.PlaySound(SoundID.Item6, Player.position);
+                    Player.teleporting = true;
+                    Player.teleportTime = 3;
+                    Player.teleportStyle = TeleportationStyleID.ShellphoneSpawn;
+                    Player.velocity = Vector2.Zero;
+                    Main.TeleportEffect(Player.getRect(), Player.teleportStyle);
                     Player.Spawn(PlayerSpawnContext.RecallFromItem);
+                    if (Main.netMode == NetmodeID.MultiplayerClient)
+                    {
+                        NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, Player.whoAmI, Player.position.X, Player.position.Y);
+                    }
                     chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.MAGIC_MIRROR);
                 }
             }
@@ -155,7 +250,7 @@ namespace TerrariaChaosEditionUnleashed
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_PET))
             {
-                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_DEBUFF))
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_PET))
                 {
                     Player.AddBuff(Main.rand.Next(ChaosUtilities.petsBuffs), (int)(60 * chaosManager.GetEffectDuration((int)ChaosManager.ChaosEffects.RANDOM_PET)));
                     chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_PET);
@@ -165,19 +260,8 @@ namespace TerrariaChaosEditionUnleashed
             {
                 if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.DANGEROUS_XRAY))
                 {
-                    Player.AddBuff(BuffID.Dangersense, (int)(60 * chaosManager.GetEffectDuration((int)ChaosManager.ChaosEffects.RANDOM_PET)));
+                    Player.AddBuff(BuffID.Dangersense, (int)(60 * chaosManager.GetEffectDuration((int)ChaosManager.ChaosEffects.DANGEROUS_XRAY)));
                     chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.DANGEROUS_XRAY);
-                }
-            }
-            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA))
-            {
-                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA))
-                {
-                    int roll = Main.rand.Next(4);
-                    (int, int)[] rolls = new (int, int)[] { (-20, 0), (20, 0), (0, -20), (0, 20) };
-                    Player.statLifeMax += rolls[roll].Item1;
-                    Player.statManaMax += rolls[roll].Item2;
-                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA);
                 }
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RAND_LIFE_MANA))
@@ -223,6 +307,7 @@ namespace TerrariaChaosEditionUnleashed
                     Main.NewText("Press UP to not die!");
                     chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.UP_OR_DIE);
                     chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.UP_OR_DIE, BitConverter.GetBytes(0f), 0);
+                    chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, (byte)0, 4);
                 }
                 byte done = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 4);
                 if (done == 0)
@@ -232,7 +317,7 @@ namespace TerrariaChaosEditionUnleashed
                     time += (float)deltaTime;
                     if (time > 3)
                     {
-                        Player.Hurt(PlayerDeathReason.ByOther(0), Player.statLifeMax2, 0, false, true, -1, false, 9999f, 9999f, 0f);
+                        Player.KillMe(PlayerDeathReason.ByOther(0), 9999, 0);
                         chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 1, 4);
                     }
                     chaosManager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.UP_OR_DIE, BitConverter.GetBytes(time), 0);
@@ -269,12 +354,19 @@ namespace TerrariaChaosEditionUnleashed
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.SPOOKY_GHOST))
             {
-                Player.ghost = true;
+                if(!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.SPOOKY_GHOST))
+                {
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.SPOOKY_GHOST);
+                    Player.ghost = true;
+                }
             }
             else
             {
                 if(chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.SPOOKY_GHOST))
                 {
+                    Vector2 playerPos = Player.position;
+                    Player.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                    Player.position = playerPos;
                     Player.ghost = false;
                     chaosManager.ResetEffectAsInitalDoneFlag((int)ChaosManager.ChaosEffects.SPOOKY_GHOST);
                 }
@@ -322,7 +414,80 @@ namespace TerrariaChaosEditionUnleashed
             {
                 Player.Male = Main.rand.NextBool();
             }
+ 
             lastUpdate = Main.gameTimeCache.TotalGameTime.TotalSeconds;
+        }
+
+        public override bool? CanAutoReuseItem(Item item)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ITEMS_GO_HAM))
+            {
+                return true;
+            }
+            return base.CanAutoReuseItem(item);
+        }
+
+        bool onceTest = false;
+
+        public override void ModifyMaxStats(out StatModifier health, out StatModifier mana)
+        {
+            base.ModifyMaxStats(out health, out mana);
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (!PlayerFxData.ContainsKey((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA))
+            {
+                PlayerFxData.Add((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA, new byte[] { 0, 0, 0, 0 });
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA))
+            {
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA))
+                {
+                    byte[] maxData1 = PlayerFxData[(int)ChaosManager.ChaosEffects.MAX_LIFE_MANA];
+                    short lifeChange1 = BitConverter.ToInt16(maxData1, 0);
+                    short manaChange1 = BitConverter.ToInt16(maxData1, 2);
+                    int roll = Main.rand.Next(4);
+                    (short, short)[] rolls = new (short, short)[] { (-20, 0), (20, 0), (0, -20), (0, 20) };
+                    lifeChange1 += rolls[roll].Item1;
+                    manaChange1 += rolls[roll].Item2;
+                    byte[] newData = new byte[4];
+                    byte[] lifeData = BitConverter.GetBytes(lifeChange1);
+                    byte[] manaData = BitConverter.GetBytes(manaChange1);
+                    newData[0] = lifeData[0];
+                    newData[1] = lifeData[1];
+                    newData[2] = manaData[0];
+                    newData[3] = manaData[1];
+                    PlayerFxData[(int)ChaosManager.ChaosEffects.MAX_LIFE_MANA] = newData;
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.MAX_LIFE_MANA);
+                }
+            }
+            // apply max life mana effect
+            byte[] maxData = PlayerFxData[(int)ChaosManager.ChaosEffects.MAX_LIFE_MANA];
+            short lifeChange = BitConverter.ToInt16(maxData, 0);
+            short manaChange = BitConverter.ToInt16(maxData, 2);
+            health.Base += lifeChange;
+            mana.Base += manaChange;
+            if (!PlayerFxData.ContainsKey((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
+            {
+                PlayerFxData.Add((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP, new byte[] { 0 });
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
+            {
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
+                {
+                    // change swap setting
+                    PlayerFxData[(int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP][0] = PlayerFxData[(int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP][0] == 0 ? (byte)1 : (byte)0;
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP);
+                }
+            }
+            // handle swapping
+            if(PlayerFxData[(int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP][0] == 1)
+            {
+                float currHealth = Player.statLifeMax + health.Base;
+                float currMana = Player.statManaMax + mana.Base;
+                float diff = currHealth - currMana;
+                health.Base -= diff;
+                mana.Base += diff;
+            }
         }
 
         public override void PostUpdate()
@@ -332,7 +497,7 @@ namespace TerrariaChaosEditionUnleashed
             {
                 Vector2 velDiff = Player.velocity - Player.oldVelocity;
                 // 2x velocity change
-                Player.velocity += velDiff * 0.05f;
+                Player.velocity += velDiff * 0.03f;
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.DISCRETIZED_MOVEMENT))
             {
@@ -382,11 +547,12 @@ namespace TerrariaChaosEditionUnleashed
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
             {
-                if (chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP))
                 {
                     int temp = Player.statLifeMax;
                     Player.statLifeMax = Player.statManaMax;
                     Player.statManaMax = temp;
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.LIFE_MANA_SWAP);
                 }
             }
             base.PreSavePlayer();
@@ -482,13 +648,34 @@ namespace TerrariaChaosEditionUnleashed
             base.OnHitByNPC(npc, hurtInfo);
         }
 
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.SMASH_BROS))
+            {
+                if (!PlayerFxData.ContainsKey((int)ChaosManager.ChaosEffects.SMASH_BROS))
+                {
+                    PlayerFxData.Add((int)ChaosManager.ChaosEffects.SMASH_BROS, new byte[] { 0, 0 });
+                }
+                byte[] currDamageData = PlayerFxData[(int)ChaosManager.ChaosEffects.SMASH_BROS];
+                short currDamage = BitConverter.ToInt16(currDamageData);
+                modifiers.Knockback *= (1 + currDamage / 1000f);
+            }
+            base.ModifyHurt(ref modifiers);
+        }
+
         public override void OnHurt(Player.HurtInfo info)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY))
             {
-                byte value = (byte)Main.rand.Next(8);
-                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, value, 0);
+                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 1, 0);
+                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, (byte)Main.rand.Next(256), 1);
+                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, (byte)Main.rand.Next(256), 2);
+                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, (byte)Main.rand.Next(256), 3);
+                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, (byte)Main.rand.Next(256), 4);
+                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, (byte)Main.rand.Next(256), 5);
+                chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, (byte)Main.rand.Next(256), 6);
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.SMASH_BROS))
             {
@@ -498,9 +685,9 @@ namespace TerrariaChaosEditionUnleashed
                 }
                 byte[] currDamageData = PlayerFxData[(int)ChaosManager.ChaosEffects.SMASH_BROS];
                 short currDamage = BitConverter.ToInt16(currDamageData);
-                currDamage = Math.Max((short)currDamage, (short)(currDamage + info.Damage / 10));
+                currDamage = Math.Max((short)currDamage, (short)(currDamage + info.Damage));
                 PlayerFxData[(int)ChaosManager.ChaosEffects.SMASH_BROS] = BitConverter.GetBytes(currDamage);
-                info.Knockback *= (1 + currDamage / 100f);
+                info.Knockback *= (1 + currDamage / 1000f);
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.SONIC_HEALTH))
             {
@@ -550,11 +737,12 @@ namespace TerrariaChaosEditionUnleashed
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ABOMINATION))
             {
+                // the positions are relative to themselves...
                 List<Microsoft.Xna.Framework.Vector2> offsets = [
-                    drawInfo.hairOffset,
-                    Player.headPosition,
-                    Player.bodyPosition,
-                    Player.legPosition,
+                    new Vector2(0, -20),
+                    new Vector2(0, -15),
+                    new Vector2(0, 0),
+                    new Vector2(0, 15),
                 ];
                 if(!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.ABOMINATION))
                 {
@@ -572,10 +760,10 @@ namespace TerrariaChaosEditionUnleashed
                     }
                     chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.ABOMINATION);
                 }
-                drawInfo.hairOffset = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 1)];
-                Player.headPosition = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 2)];
-                Player.bodyPosition = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 3)];
-                Player.legPosition = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 4)];
+                drawInfo.hairOffset = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 0)] + new Vector2(0, 20);
+                Player.headPosition = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 1)] + new Vector2(0, 15);
+                Player.bodyPosition = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 2)] + new Vector2(0, 0);
+                Player.legPosition = offsets[chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.ABOMINATION, 3)] + new Vector2(0, -15);
             }
             if(stunTime > 0)
             {
@@ -588,6 +776,7 @@ namespace TerrariaChaosEditionUnleashed
                     // rotDirFlag body, posDirFlag head, rotDirFlag head, rotDirFlag leg, posDirFlag hair
                     // 5bit
                     chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PLAYER_SOLAR_SYSTEM, (byte)Main.rand.Next(256), 0);
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.PLAYER_SOLAR_SYSTEM);
                 }
                 byte rotData = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PLAYER_SOLAR_SYSTEM, 0);
                 float dir = (rotData & 1) == 1 ? -1 : 1;
@@ -614,6 +803,17 @@ namespace TerrariaChaosEditionUnleashed
                 helperX = drawInfo.hairOffset.X * MathF.Cos(angle) - drawInfo.hairOffset.Y * MathF.Sin(angle);
                 helperY = drawInfo.hairOffset.X * MathF.Sin(angle) + drawInfo.hairOffset.Y * MathF.Cos(angle);
                 drawInfo.hairOffset = new Vector2(helperX, helperY) + Player.headPosition;
+            }
+            else
+            {
+                if(chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.PLAYER_SOLAR_SYSTEM))
+                {
+                    Player.bodyRotation = 0;
+                    Player.legRotation = 0;
+                    Player.headRotation = 0;
+                    Player.legPosition = Vector2.Zero;
+                    Player.headPosition = Vector2.Zero;
+                }
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.UPSIDE_DOWN))
             {
@@ -672,13 +872,6 @@ namespace TerrariaChaosEditionUnleashed
 
         public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
         {
-            
-            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
-            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.HEALING_HURTS))
-            {
-                healValue = -healValue;
-            }
-            healValue = -healValue;
             base.GetHealLife(item, quickHeal, ref healValue);
         }
 
@@ -687,19 +880,34 @@ namespace TerrariaChaosEditionUnleashed
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.BIG_WEAPONS))
             {
-                scale = 5f;
+                scale = 25f;
             }
             base.ModifyItemScale(item, ref scale);
         }
 
         public override float UseSpeedMultiplier(Item item)
         {
+            return base.UseSpeedMultiplier(item);
+        }
+
+        public override float UseAnimationMultiplier(Item item)
+        {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ITEMS_GO_HAM))
             {
-                return 999f;
+                return 0.5f;
             }
-            return base.UseSpeedMultiplier(item);
+            return base.UseAnimationMultiplier(item);
+        }
+
+        public override float UseTimeMultiplier(Item item)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ITEMS_GO_HAM))
+            {
+                return 0f;
+            }
+            return base.UseTimeMultiplier(item);
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
@@ -729,6 +937,7 @@ namespace TerrariaChaosEditionUnleashed
                 {
                     if (triggersSet.Up)
                     {
+                        Main.NewText("Success!");
                         chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.UP_OR_DIE, 1, 4);
                     }
                 }
@@ -741,14 +950,14 @@ namespace TerrariaChaosEditionUnleashed
                     int paddleX = BitConverter.ToInt32(dataPaddleX);
                     if (triggersSet.Left)
                     {
-                        if (paddleX - 1 > 0)
+                        if (paddleX - 8 > 0)
                         {
                             paddleX -= 8;
                         }
                     }
                     else if (triggersSet.Right)
                     {
-                        if (paddleX + 1 < Main.ScreenSize.X - 280 - 140)
+                        if (paddleX + 8 < Main.ScreenSize.X - 280) // - 140
                         {
                             paddleX += 8;
                         }

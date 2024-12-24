@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics.Effects;
+using TerrariaChaosEditionUnleashed.Core;
 
 namespace TerrariaChaosEditionUnleashed
 {
@@ -16,112 +18,113 @@ namespace TerrariaChaosEditionUnleashed
         int nextEffectId;
         public enum ChaosEffects
         {
-            // v1 24/25
-            CHANGE_HARDMODE,
-            SKIP_TIME,
-            NO_GRAVITY,
+            // 21 to fix&/verify
+            // v1 24/24 | 16/24 verified
+            CHANGE_HARDMODE, // works
+            SKIP_TIME, // works
+            NO_GRAVITY, // works
             RANDOM_MUSIC,
-            RANDOM_SOUND,
-            RANDOM_NPC,
+            RANDOM_SOUND, // works
+            RANDOM_NPC, // works
             NO_CREATIVITY,
-            RANDOM_TELEPORT,
-            LIFE_MANA_SWAP,
-            MAGIC_MIRROR,
-            RECOLORED_NPCS,
+            RANDOM_TELEPORT, // works
+            LIFE_MANA_SWAP, // works
+            MAGIC_MIRROR, // works?
+            RECOLORED_NPCS, // works
             RANDOM_BUFF,
-            RANDOM_DEBUFF,
-            RANDOM_PET,
-            HEALING_HURTS,
-            RANDOM_CHAT_MSG,
+            RANDOM_DEBUFF, // works
+            RANDOM_PET, // works
+            HEALING_HURTS, // prolly works
+            RANDOM_CHAT_MSG, // works
             RANDOM_MONOLITH_FX,
-            DANGEROUS_XRAY,
-            RAND_TILE_CONVERT,
-            RAND_NPC_FX,
-            MERRY_XMAS,
-            RANDOM_EVENT,
+            DANGEROUS_XRAY, // works
+            RAND_TILE_CONVERT, // assume it works
+            RAND_NPC_FX, // prolly works?
+            MERRY_XMAS, // prolly works
+            RANDOM_EVENT, // works?
             NO_FLYING_AND_WORMING,
             SMASH_BROS,
-            // v2 23+2/25
-            IMMENSE_SPAWN_RATE,
-            MAX_LIFE_MANA,
-            BUTTER_FINGERS,
-            INFINITE_BUGS,
-            SHADOW_ENEMIES,
-            NPC_SPIN_2_WIN,
-            ULTIMATE_BOSS,
-            WORLD_BLESSINGS,
-            TALKING_CREATURES,
-            ROD_OF_DISCORD,
-            RAND_PROJ_FX,
-            PLAYER_TORNADO,
-            NPC_GROW_SHRINK,
-            JUNGLE_GROWS,
-            SWAP_PLACES,
-            EXPLOSIVE_DEATH,
-            RAND_ENEMY_FX_II,
-            SONIC_HEALTH,
-            UPSIDE_DOWN,
-            RANDOM_CRAFT,
-            RANDOM_TILE_FX,
-            RECOLORED_TILES,
+            // v2 25/25 | 18/25 verified
+            IMMENSE_SPAWN_RATE, // works
+            MAX_LIFE_MANA, // works
+            BUTTER_FINGERS, // works
+            INFINITE_BUGS, // works
+            SHADOW_ENEMIES, // works
+            NPC_SPIN_2_WIN, // works
+            ULTIMATE_BOSS, // works
+            WORLD_BLESSINGS, //works?
+            TALKING_CREATURES, //works
+            ROD_OF_DISCORD, //works
+            RAND_PROJ_FX, // prolly works
+            PLAYER_TORNADO, // works
+            NPC_GROW_SHRINK, // works
+            JUNGLE_GROWS, // prolly works
+            SWAP_PLACES, // works?
+            EXPLOSIVE_DEATH, // works
+            RAND_ENEMY_FX_II, // prolly works
+            SONIC_HEALTH, // works
+            UPSIDE_DOWN, // works
+            RANDOM_CRAFT, // works
+            RANDOM_TILE_FX, // prolly works
+            RECOLORED_TILES, // works
             ACCUMULATING_VELOCITY,
-            VERIFY_HUMAN,
-            NON_BINARY_GENDER,
-            // v3 25/25
-            RAND_LIFE_MANA,
-            CURSED_BY_LUCK,
-            BIG_WEAPONS,
-            ITEMS_GO_HAM,
-            HALLO_HALLOWEEN,
-            RAND_NUMBER_FX,
-            REINFORCEMENTS,
+            VERIFY_HUMAN, // works
+            NON_BINARY_GENDER, //works
+            // v3 25/25 | 21/25 verified
+            RAND_LIFE_MANA, // works
+            CURSED_BY_LUCK, // assume it works
+            BIG_WEAPONS, // works
+            ITEMS_GO_HAM, // works
+            HALLO_HALLOWEEN, // prolly works
+            RAND_NUMBER_FX, // works
+            REINFORCEMENTS, // works
             INVERTED_ENEMIES,
-            ALWAYS_WET,
-            DARKNESS_ENSUES,
-            INVERSE_DE_BUFF,
-            RANDOM_CREDITZ,
-            FAKE_PICKUP,
-            RANDOM_AUDIO_PITCHES,
+            ALWAYS_WET, // works
+            DARKNESS_ENSUES, // works
+            INVERSE_DE_BUFF, // works
+            RANDOM_CREDITZ, // works
+            FAKE_PICKUP, // works
+            RANDOM_AUDIO_PITCHES, // works
             APRIL_WEATHER,
-            SPOOKY_GHOST,
-            OLD_SCHOOL_CAM,
-            PLAYER_SOLAR_SYSTEM,
-            READABLE_UI,
-            WEIRD_LIGHTING,
-            GRAVEYARD_SHIFT,
+            SPOOKY_GHOST, //works
+            OLD_SCHOOL_CAM, // works
+            PLAYER_SOLAR_SYSTEM, // works
+            READABLE_UI, // works
+            WEIRD_LIGHTING, // works
+            GRAVEYARD_SHIFT, // works
             RANDOM_PYLON_FX,
-            RAND_PROJ_FX_II,
-            FALL_SENSITIVITY,
-            RANDOM_TILE_FX_II,
-            // unleashed 25
+            RAND_PROJ_FX_II, // prolly works
+            FALL_SENSITIVITY, // works
+            RANDOM_TILE_FX_II, // works?
+            // unleashed 25 | 23/25 veified
             CRAZY_GRAVITY,
-            ABOMINATION,
-            TIME_TRAVEL,
-            PAIN_SHIFTS_REALITY,
-            HUGE_WORLD,
-            RANDOM_HEALTH_BARS,
-            UNMISSABLE_CURSOR,
-            NEARSIGHTED,
-            ENEMIES_STUN,
-            UP_OR_DIE,
-            RAND_ITEM_DROP_FX,
-            INVISIBLE_INVENTORY_ITEMS,
-            RANDOM_ITEM_ICONS,
-            RANDOM_NPC_SPRITES,
-            SHIMMERING,
-            HOT_WAWA,
-            POPUP_MIX_UP,
-            BREAKOUT,
-            RANDOM_TOOLTIP_EFFECTS,
-            FLATRARRIA,
-            RAND_BUFF_UI_FX,
+            ABOMINATION, // works
+            TIME_TRAVEL, // works
+            PAIN_SHIFTS_REALITY, // works
+            HUGE_WORLD, // works
+            RANDOM_HEALTH_BARS, // works
+            UNMISSABLE_CURSOR, // works
+            NEARSIGHTED, // works
+            ENEMIES_STUN, // works
+            UP_OR_DIE, // works
+            RAND_ITEM_DROP_FX, // works
+            INVISIBLE_INVENTORY_ITEMS, // works
+            RANDOM_ITEM_ICONS, // works
+            RANDOM_NPC_SPRITES, // works
+            SHIMMERING, // works
+            HOT_WAWA, // works
+            POPUP_MIX_UP, // works
+            BREAKOUT, // works
+            RANDOM_TOOLTIP_EFFECTS, // works
+            FLATRARRIA, // works
+            RAND_BUFF_UI_FX, // works
             //KOWALSKI_ANALYSIS,
             //MINIRARRIA,
-            BRIGHT_NIGHT,
-            SEVEN_YEARS_BAD_LUCK,
-            DISCRETIZED_MOVEMENT,
-            FAKE_ENEMIES,
-            CHAOS_MUSIC,
+            BRIGHT_NIGHT, // works
+            SEVEN_YEARS_BAD_LUCK, // assume it works
+            DISCRETIZED_MOVEMENT, // works
+            FAKE_ENEMIES, // works
+            CHAOS_MUSIC, // works
         }
 
         List<ChaosEffect> allEffects;
@@ -210,7 +213,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects.Add(new ChaosEffect("Player becomes a Solar System~", 100).AddTag("legacy").AddTag("v3"));
             allEffects.Add(new ChaosEffect("Readable UI", 100).AddTag("legacy").AddTag("v3"));
             allEffects.Add(new ChaosEffect("Weird Lighting?!", 100).AddTag("legacy").AddTag("v3"));
-            allEffects.Add(new ChaosEffect("Graveyard Shit! D:", 100).AddTag("legacy").AddTag("v3"));
+            allEffects.Add(new ChaosEffect("Graveyard Shift! D:", 100).AddTag("legacy").AddTag("v3"));
             allEffects.Add(new ChaosEffect("Random Pylon FX", 100).AddTag("legacy").AddTag("v3"));
             allEffects.Add(new ChaosEffect("Random Projectile FX II", 100).AddTag("legacy").AddTag("v3"));
             allEffects.Add(new ChaosEffect("Fall Sensitivity!", 100).AddTag("legacy").AddTag("v3"));
@@ -260,6 +263,21 @@ namespace TerrariaChaosEditionUnleashed
                     effectPool = allEffects;
                 }
             }
+            else if(modConfig.gameMode == ModConfigChaos.GameMode.CHALLENGE)
+            {
+                if(modConfig.GameModeChallenge.challengeSelection == ModConfigChaos.ConfigChallenge.ChallengeSelection.ORIGINAL)
+                {
+                    effectPool = allEffects.Where(fx => fx.HasTag("v1")).ToList();
+                }
+                else if(modConfig.GameModeChallenge.challengeSelection == ModConfigChaos.ConfigChallenge.ChallengeSelection.TELEPORTATION)
+                {
+                    effectPool = allEffects.Where(fx => fx.HasTag("teleport")).ToList();
+                }
+                else if(modConfig.GameModeChallenge.challengeSelection == ModConfigChaos.ConfigChallenge.ChallengeSelection.MINIGAMES)
+                {
+                    effectPool = allEffects.Where(fx => fx.HasTag("minigame")).ToList();
+                }
+            }
             else
             {
                 effectPool = allEffects;
@@ -281,7 +299,7 @@ namespace TerrariaChaosEditionUnleashed
             allEffects[8].weight = configCustom.LifeManaSwapFxWeight;
             allEffects[9].weight = configCustom.MagicMirrorFxWeight;
             allEffects[10].weight = configCustom.RecoloredNPCsFxWeight;
-            allEffects[11].weight = configCustom.RandomBuffUIFxWeight;
+            allEffects[11].weight = configCustom.RandomBuffFxWeight;
             allEffects[12].weight = configCustom.RandomDebuffFxWeight;
             allEffects[13].weight = configCustom.RandomPetFxWeight;
             allEffects[14].weight = configCustom.HealingHurtsFxWeight;
@@ -419,23 +437,29 @@ namespace TerrariaChaosEditionUnleashed
             {
                 case (int)ModConfigChaos.GameMode.CUSTOM:
                     int roll = Main.rand.Next(runningWeightTotal.Last()) + 1;
-                    nextEffectId = runningWeightTotal.BinarySearch(roll);
+                    nextEffectId = runningWeightTotal.BinarySearch(roll) - 1;
                     if(nextEffectId < 0)
                     {
                         nextEffectId = ~nextEffectId;
                     }
+                    if (allEffects[nextEffectId].weight == 0)
+                    {
+                        nextEffectId--;
+                    }
                     break;
                 case (int)ModConfigChaos.GameMode.CHALLENGE:
-                case (int)ModConfigChaos.GameMode.SURVIVAL:
+                    nextEffectId = Main.rand.Next(0, effectPool.Count);
+                    break;
+                //case (int)ModConfigChaos.GameMode.SURVIVAL:
                 case (int)ModConfigChaos.GameMode.CLASSIC:
-                    nextEffectId = Main.rand.Next(0, allEffects.Count);
+                    nextEffectId = Main.rand.Next(0, effectPool.Count);
                     break;
             }
         }
 
         public string GetNextChaosEffectName()
         {
-            return allEffects[nextEffectId].effectName;
+            return effectPool[nextEffectId].effectName;
         }
 
         public bool IsEffectActive(int index)

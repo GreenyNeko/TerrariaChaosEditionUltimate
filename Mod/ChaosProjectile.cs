@@ -57,17 +57,17 @@ namespace TerrariaChaosEditionUnleashed
                 vec.Normalize();
                 projectile.velocity = vec;
             }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ACCUMULATING_VELOCITY))
+            {
+                projectile.velocity *= 1.0375f;
+            }
             return base.PreAI(projectile);
         }
 
         public override void PostAI(Projectile projectile)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
-            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ACCUMULATING_VELOCITY))
-            {
-                Vector2 velDiff = projectile.velocity - projectile.oldVelocity;
-                projectile.velocity += velDiff * 0.05f;
-            }
+
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.DISCRETIZED_MOVEMENT))
             {
                 // TODO: which of these vars do we want to store in the effect?

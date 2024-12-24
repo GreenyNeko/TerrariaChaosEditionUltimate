@@ -15,7 +15,7 @@ namespace TerrariaChaosEditionUnleashed
         public enum GameMode
         {
             CLASSIC,
-            SURVIVAL,
+            //SURVIVAL,
             CHALLENGE,
             CUSTOM,
         }
@@ -24,7 +24,7 @@ namespace TerrariaChaosEditionUnleashed
         public bool ShowEffectOverHead;
         public bool ShowNextEffectInChat;
         public ConfigClassic GameModeClassic = new ConfigClassic();
-        public ConfigSurvival GameModeSurvival = new ConfigSurvival();
+        //public ConfigSurvival GameModeSurvival = new ConfigSurvival();
         public ConfigChallenge GameModeChallenge = new ConfigChallenge();
         public ConfigCustom GameModeCustom = new ConfigCustom();
         [SeparatePage]

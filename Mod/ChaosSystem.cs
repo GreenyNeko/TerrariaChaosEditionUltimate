@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.Personalities;
 using Terraria.GameContent.UI.ResourceSets;
@@ -19,6 +20,7 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Light;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Server;
 using Terraria.UI;
@@ -30,6 +32,7 @@ namespace TerrariaChaosEditionUnleashed
     internal class ChaosSystem : ModSystem
     {
         public ChaosManager manager;
+        public int currMusic = -1;
         double timeSinceLastEffect = 0f;
         double lastUpdate;
         float effectCooldown, effectCooldownRandomOffset, effectDuration, effectDurationRandomOffset;
@@ -84,6 +87,7 @@ namespace TerrariaChaosEditionUnleashed
         public override void OnWorldLoad()
         {
             base.OnWorldLoad();
+            currMusic = -1;
             currGameMode = modConfig.gameMode;
             effectCooldown = 20f;
             effectCooldownRandomOffset = 7.5f;
@@ -116,17 +120,32 @@ namespace TerrariaChaosEditionUnleashed
         {
             if (manager.IsEffectActive((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY))
             {
-                byte counter = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 0);
-                int blue = counter % 2;
-                int green = (counter >> 1) % 2;
-                int red = (counter >> 2) % 2;
-
-                if (blue == 0 && green == 0 && red == 0)
+                if (!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY))
                 {
-                    blue = green = red = 1;
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 0, 0);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, backgroundColor.R, 1);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, backgroundColor.G, 2);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, backgroundColor.B, 3);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, tileColor.R, 4);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, tileColor.G, 5);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, tileColor.B, 6);
+                    Main.NewText(tileColor);
+                    manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY);
                 }
-                backgroundColor = new Color((float)red, (float)green, (float)blue);
-                tileColor = new Color((float)red, (float)green, (float)blue);
+                if(manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 0) != 0)
+                {
+                    backgroundColor.R = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 1);
+                    backgroundColor.G = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 2);
+                    backgroundColor.B = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 3);
+                    tileColor.R = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 4);
+                    tileColor.G = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 5);
+                    tileColor.B = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.PAIN_SHIFTS_REALITY, 6);
+                }
+            }
+            if (manager.IsEffectActive((int)ChaosManager.ChaosEffects.DARKNESS_ENSUES))
+            {
+                backgroundColor = new Color(0, 0, 0);
+                tileColor = new Color(0, 0, 0);
             }
             base.ModifySunLightColor(ref tileColor, ref backgroundColor);
         }
@@ -243,7 +262,8 @@ namespace TerrariaChaosEditionUnleashed
             {
                 if (!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_MUSIC))
                 {
-                    Main.musicBox2 = Main.rand.Next(Main.maxMusic);
+                    currMusic = Main.rand.Next(MusicID.Count);
+                    //Main.musicBox2 
                     manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_MUSIC);
                 }
             }
@@ -262,7 +282,7 @@ namespace TerrariaChaosEditionUnleashed
                 time += (float)deltaTime;
                 if(time > next)
                 {
-                    Main.musicBox2 = Main.rand.Next(Main.maxMusic);
+                    currMusic = Main.rand.Next(MusicID.Count);
                     manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.CHAOS_MUSIC, BitConverter.GetBytes(Main.rand.NextFloat() * 5), 4);
                 }
                 manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.CHAOS_MUSIC, BitConverter.GetBytes(time), 0);
@@ -300,19 +320,6 @@ namespace TerrariaChaosEditionUnleashed
                     Main.NewText(selection.Item1, selection.Item2);
                     manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_CHAT_MSG);
                 }
-            }
-            //Filters.Scene[]
-            if(manager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX))
-            {
-                if(!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX))
-                {
-                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX, (byte)Main.rand.Next(4), 0);
-                    manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX);
-                }
-                byte fx = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.RANDOM_MONOLITH_FX, 0);
-                string[] monolith = new string[] { "MonolithSolar, MonolithVortex", "MonolithStardust", "MonolithNebula" };
-                SkyManager.Instance[monolith[fx]].Activate(Main.CurrentPlayer.position);
-                Filters.Scene[monolith[fx]].Activate(Main.CurrentPlayer.position);
             }
             if(manager.IsEffectActive((int)ChaosManager.ChaosEffects.HALLO_HALLOWEEN))
             {
@@ -365,28 +372,20 @@ namespace TerrariaChaosEditionUnleashed
             {
                 if(!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.WORLD_BLESSINGS))
                 {
-                    bool temp = Main.hardMode;
-                    Main.hardMode = true;
-                    WorldGen.SmashAltar(0, 0);
-                    WorldGen.SmashAltar(0, 0);
-                    WorldGen.SmashAltar(0, 0);
-                    Main.hardMode = temp;
+                    CustomSmashAltar();
+                    CustomSmashAltar();
+                    CustomSmashAltar();
                     manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.WORLD_BLESSINGS);
-                }
-            }
-            if(manager.IsEffectActive((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS))
-            {
-                if(!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS))
-                {
-                    NPC.SpawnBoss((int)(Main.CurrentPlayer.position.X * 8), (int)(Main.CurrentPlayer.position.Y * 8), Main.rand.Next(NPCID.Count), Main.CurrentPlayer.whoAmI);
-                    manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS);
                 }
             }
             if(manager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_CREDITZ))
             {
                 if(!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_CREDITZ))
                 {
-                    Terraria.GameContent.Events.CreditsRollEvent.SetRemainingTimeDirect(30);
+                    Terraria.GameContent.Events.CreditsRollEvent.Reset();
+                    //Terraria.GameContent.Events.CreditsRollEvent.SetRemainingTimeDirect((int)(60*manager.GetEffectDuration((int)ChaosManager.ChaosEffects.RANDOM_CREDITZ)));
+                    Terraria.GameContent.Events.CreditsRollEvent.TryStartingCreditsRoll();
+                    Terraria.GameContent.Events.CreditsRollEvent.SetRemainingTimeDirect((int)(60 * manager.GetEffectDuration((int)ChaosManager.ChaosEffects.RANDOM_CREDITZ)));
                     manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_CREDITZ);
                 }
             }
@@ -400,10 +399,11 @@ namespace TerrariaChaosEditionUnleashed
                     // NPC and Player
                     if(type == 1)
                     {
-                        Player selectedPlayer = Main.rand.Next(Main.player);
+                        IEnumerable<Player> activePlayers = Main.player.Where(pl => pl.active);
+                        Player selectedPlayer = Main.rand.Next(activePlayers.ToArray());
                         // restrict to close by NPCs to not teleport across the whole world
                         activeNPCs = Main.npc.Where(npc =>
-                            npc.active && (npc.position - selectedPlayer.position).Length() < 200f
+                            npc.active && (npc.position - selectedPlayer.position).Length() < 1000f
                         );
                         alternative = activeNPCs.Count() <= 0;
                         if (activeNPCs.Count() > 0)
@@ -426,49 +426,6 @@ namespace TerrariaChaosEditionUnleashed
                     }
                     manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.SWAP_PLACES);
                 }
-            }
-            if(manager.IsEffectActive((int)ChaosManager.ChaosEffects.APRIL_WEATHER))
-            {
-                if(!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.APRIL_WEATHER))
-                {
-                    manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.APRIL_WEATHER, BitConverter.GetBytes(10f), 0);
-                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.APRIL_WEATHER, 0, 4);
-                    manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.APRIL_WEATHER);
-                }
-                byte[] timeData = manager.ReadMetaDataBytes((int)ChaosManager.ChaosEffects.APRIL_WEATHER, 0, 4);
-                float time = BitConverter.ToSingle(timeData, 0);
-                time += (float)deltaTime;
-                if(time > 5f)
-                {
-                    // update time
-                    time -= 5f;
-                    // rain
-                    float raining = MathF.Max(Main.rand.NextFloat() * 2 - 1f, 0f);
-                    if (raining <= 0f)
-                    {
-                        Main.raining = false;
-                    }
-                    Main.maxRaining = raining;
-                    // wind
-                    float windStateGen = Main.rand.NextFloat();
-                    byte state = 0;
-                    // left wind
-                    if (windStateGen > 0.75f)
-                    {
-                        state += 1;
-                    }
-                    if(windStateGen > 0.5f)
-                    {
-                        state += 1;
-                    }
-                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.APRIL_WEATHER, state, 4);
-                }
-                byte windState = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.APRIL_WEATHER, 4);
-                if(windState != 0)
-                {
-                    Main.windSpeedTarget = (windState == 1 ? -1 : 1) * Main.rand.NextFloat() * 2.5f;
-                }
-                manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.APRIL_WEATHER, BitConverter.GetBytes(time), 0);
             }
             if(manager.IsEffectActive((int)ChaosManager.ChaosEffects.READABLE_UI))
             {
@@ -507,7 +464,7 @@ namespace TerrariaChaosEditionUnleashed
                         TileOverride tileOverride = new TileOverride();
                         int fx = Main.rand.Next((int)OverrideType.MAX - 1) + 1;
                         tileOverride.ApplyOverrideType(fx, i, Main.rand.NextBool() ? (byte)1 : (byte)0);
-                        chaosTile.tileOverrides.Add(tileOverride);
+                        chaosTile.tileTypeOverrides.Add((fx,i),tileOverride);
                     }                
                     manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RANDOM_TILE_FX_II);
                 }
@@ -517,17 +474,17 @@ namespace TerrariaChaosEditionUnleashed
                 if (manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.RANDOM_TILE_FX_II))
                 {
                     /* 
-                     * if another code shares the same overrides, we store all effects after each other so we can store the start index and the count
-                     * we can then use the start index and count to delete the applied effects
+                     * if another code shares the same overrides, we need to store the owner
                      */
                     ChaosTile chaosTile = ModContent.GetInstance<ChaosTile>();
-                    foreach (TileOverride tileOverride in chaosTile.tileOverrides)
+                    foreach (KeyValuePair<(int,int),TileOverride> tileOverride in chaosTile.tileTypeOverrides)
                     {
-                        if (tileOverride.overrideType != (int)OverrideType.COLOR)
+                        if (tileOverride.Key.Item1 != (int)OverrideType.COLOR)
                         {
-                            tileOverride.UndoOverrideType();
+                            tileOverride.Value.UndoOverrideType();
                         }
                     }
+                    chaosTile.tileTypeOverrides.Clear();
                     manager.ResetEffectAsInitalDoneFlag((int)ChaosManager.ChaosEffects.RANDOM_TILE_FX_II);
                 }
             }
@@ -535,7 +492,6 @@ namespace TerrariaChaosEditionUnleashed
             {
                 if(!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.VERIFY_HUMAN))
                 {
-                   
                     manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, 0, 0);
                     string randWord = "";
                     for(int i = 0; i < 6; i++)
@@ -543,10 +499,9 @@ namespace TerrariaChaosEditionUnleashed
                         randWord += ChaosUtilities.GetRandomAlphaNum();
                     }
                     Main.NewText("Please verify that you are human by sending the code \"" + randWord + "\" in chat.");
-                    manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, randWord.ToByteArray(), 1);
+                    manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, Encoding.ASCII.GetBytes(randWord), 1);
                     manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.VERIFY_HUMAN);
                 }
-                
             }
             else
             {
@@ -555,34 +510,94 @@ namespace TerrariaChaosEditionUnleashed
                     byte success = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.VERIFY_HUMAN, 0);
                     if(success == 0)
                     {
-                        Main.GoToWorldSelect();
+                        Main.menuMode = MenuID.WorldSelect;
+                        Main.gameMenu = true;
+                        Netplay.Disconnect = true;
                     }
                     manager.ResetEffectAsInitalDoneFlag((int)ChaosManager.ChaosEffects.VERIFY_HUMAN);
                 }
             }
         }
 
+        public override void UpdateUI(GameTime gameTime)
+        {
+            
+            base.UpdateUI(gameTime);
+        }
+
         public override void PostUpdateEverything()
         {
+            double deltaTime = Main.gameTimeCache.TotalGameTime.TotalSeconds - lastUpdate;//Main.gameTimeCache.ElapsedGameTime.TotalSeconds;
+            if (manager.IsEffectActive((int)ChaosManager.ChaosEffects.APRIL_WEATHER))
+            {
+                if (!manager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.APRIL_WEATHER))
+                {
+                    manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.APRIL_WEATHER, BitConverter.GetBytes(10f), 0);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.APRIL_WEATHER, 0, 4);
+                    manager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.APRIL_WEATHER);
+                }
+                byte[] timeData = manager.ReadMetaDataBytes((int)ChaosManager.ChaosEffects.APRIL_WEATHER, 0, 4);
+                float time = BitConverter.ToSingle(timeData, 0);
+                time += (float)deltaTime;
+                if (time > 3f)
+                {
+                    // update time
+                    time -= 3f;
+                    // rain
+                    float raining = MathF.Max(Main.rand.NextFloat() * 2 - 1f, 0f);
+                    if (raining <= 0f)
+                    {
+                        Main.raining = false;
+                    }
+                    Main.maxRaining = raining;
+                    // wind
+                    float windStateGen = Main.rand.NextFloat();
+                    byte state = 0;
+                    // left wind
+                    if (windStateGen > 0.75f)
+                    {
+                        state += 1;
+                    }
+                    if (windStateGen > 0.5f)
+                    {
+                        state += 1;
+                    }
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.APRIL_WEATHER, (byte)((Main.rand.NextFloat() > 0.5f) ? 1 : 0), 5);
+                    manager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.APRIL_WEATHER, state, 4);
+                }
+                byte windState = manager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.APRIL_WEATHER, 4);
+                if (windState != 0)
+                {
+                    Main.windSpeedTarget = (windState == 1 ? -1 : 1) * Main.rand.NextFloat() * 2.5f;
+                }
+                manager.WriteMetaDataBytes((int)ChaosManager.ChaosEffects.APRIL_WEATHER, BitConverter.GetBytes(time), 0);
+            }
             base.PostUpdateEverything();
         }
 
         public override void OnWorldUnload()
         {
+
+            base.OnWorldUnload();
+        }
+
+        public override void PreSaveAndQuit()
+        {
             ChaosTile chaosTile = ModContent.GetInstance<ChaosTile>();
-            foreach (TileOverride tileOverride in chaosTile.tileOverrides)
+            foreach (KeyValuePair<(int, int, int), TileOverride> tileOverride in chaosTile.tileOverrides)
             {
-                if (tileOverride.overrideType == (int)OverrideType.COLOR)
+                if (tileOverride.Key.Item1 == (int)OverrideType.COLOR)
                 {
-                    tileOverride.UndoOverrideTile();
-                }
-                else
-                {
-                    tileOverride.UndoOverrideType();
+                    tileOverride.Value.UndoOverrideTile();
                 }
             }
-            chaosTile.tileOverrides.RemoveAll(to => to.overrideType == (int)OverrideType.COLOR);
-            base.OnWorldUnload();
+            foreach (KeyValuePair<(int, int), TileOverride> tileOverride in chaosTile.tileTypeOverrides)
+            {
+                tileOverride.Value.UndoOverrideType();
+            }
+            chaosTile.tileOverrides.Clear();
+            chaosTile.tileTypeOverrides.Clear();
+            base.PreSaveAndQuit();
         }
 
         public override void PostDrawInterface(SpriteBatch spriteBatch)
@@ -698,16 +713,151 @@ namespace TerrariaChaosEditionUnleashed
 
         public override void ResetNearbyTileEffects()
         {
-            ChaosTile chaosTile = ModContent.GetInstance<ChaosTile>();
-            foreach(TileOverride tileOverride in chaosTile.tileOverrides)
+            // remove all overrides when the code is no longer active
+            if(!manager.IsEffectActive((int)ChaosManager.ChaosEffects.RECOLORED_TILES))
             {
-                if(tileOverride.overrideType == (int)OverrideType.COLOR)
+                ChaosTile chaosTile = ModContent.GetInstance<ChaosTile>();
+                List<(int,int,int)> keysToRemove = new List<(int,int,int)> ();
+                foreach (KeyValuePair<(int,int,int),TileOverride> tileOverride in chaosTile.tileOverrides)
                 {
-                    tileOverride.UndoOverrideTile();
+                    if (tileOverride.Key.Item1 == (int)OverrideType.COLOR)
+                    {
+                        keysToRemove.Add(tileOverride.Key);
+                        tileOverride.Value.UndoOverrideTile();
+                    }
+                }
+                for (int i = 0; i < keysToRemove.Count; i++)
+                {
+                    chaosTile.tileOverrides.Remove(keysToRemove[i]);
                 }
             }
-            chaosTile.tileOverrides.RemoveAll(to => to.overrideType == (int)OverrideType.COLOR);
             base.ResetNearbyTileEffects();
+        }
+
+        public void AltarOreSpawn(ref int oreCount, int ore, int altOre, string oreName, string altOreName, ref float num3)
+        {
+            int oreTile = WorldGen.genRand.Next(2) == 1 ? ore : altOre;
+            int num5 = 14;
+            if (oreTile == altOre)
+            {
+                num5 += 9;
+                num3 *= 0.9f;
+            }
+            string tileName = oreTile == ore ? oreName : altOreName;
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                Main.NewText("Your world has been blessed with " + tileName + "!", Color.Green);
+            }
+            else if (Main.netMode == NetmodeID.Server)
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Your world has been blessed with " + tileName + "!"), Color.Green, -1);
+            }
+            oreCount = oreTile;
+            if(oreCount == 0)
+            {
+                num3 *= 1.05f;
+            }
+        }
+
+        public void CustomSmashAltar()
+        {
+            int oreCount = WorldGen.altarCount % 3;
+            int repitition = WorldGen.altarCount / 3 + 1;
+            float num3 = (float)(Main.maxTilesX / 4200);
+            int num4 = 1 - oreCount;
+            num3 = num3 * 310f - (float)(85 * oreCount);
+            num3 *= 0.85f;
+            num3 /= (float)repitition;
+            if(Main.hardMode)
+            {
+                if(oreCount == 2)
+                {
+                    AltarOreSpawn(ref oreCount, TileID.Adamantite, TileID.Titanium, "Adamantite", "Titanium", ref num3);
+                }
+                if (oreCount == 1)
+                {
+                    AltarOreSpawn(ref oreCount, TileID.Mythril, TileID.Orichalcum, "Mythril", "Orichalcum", ref num3);
+                }
+                if(oreCount == 0)
+                {
+                    AltarOreSpawn(ref oreCount, TileID.Cobalt, TileID.Palladium, "Cobalt", "Palladium", ref num3);
+                }
+            }
+            else
+            {
+                if (oreCount == 2)
+                {
+                    AltarOreSpawn(ref oreCount, TileID.Gold, TileID.Platinum, "Gold", "Platinum", ref num3);
+                }
+                if (oreCount == 1)
+                {
+                    AltarOreSpawn(ref oreCount, TileID.Silver, TileID.Tungsten, "Silver", "Tungsten", ref num3);
+                }
+                if (oreCount == 0)
+                {
+                    AltarOreSpawn(ref oreCount, TileID.Iron, TileID.Lead, "Iron", "Lead", ref num3);
+                }
+            }
+            
+            int num8 = 0;
+            while ((float)num8 < num3)
+            {
+                int arg_31A_0 = WorldGen.genRand.Next(100, Main.maxTilesX - 100);
+                double num9 = Main.worldSurface;
+                if (oreCount == TileID.Mythril || oreCount == TileID.Orichalcum || oreCount == TileID.Silver || oreCount == TileID.Tungsten)
+                {
+                    num9 = Main.rockLayer;
+                }
+                if (oreCount == TileID.Adamantite || oreCount == TileID.Titanium || oreCount == TileID.Gold || oreCount == TileID.Platinum)
+                {
+                    num9 = (Main.rockLayer + Main.rockLayer + (double)Main.maxTilesY) / 3.0;
+                }
+                int j2 = WorldGen.genRand.Next((int)num9, Main.maxTilesY - 150);
+                WorldGen.OreRunner(arg_31A_0, j2, (double)WorldGen.genRand.Next(5, 9 + num4), WorldGen.genRand.Next(5, 9 + num4), (ushort)oreCount);
+                num8++;
+            }
+            int num10 = WorldGen.genRand.Next(3);
+            int num11 = 0;
+            while (num10 != 2 && num11++ < 1000)
+            {
+                int num12 = WorldGen.genRand.Next(100, Main.maxTilesX - 100);
+                int num13 = WorldGen.genRand.Next((int)Main.rockLayer + 50, Main.maxTilesY - 300);
+                if (Main.tile[num12, num13].HasTile && Main.tile[num12, num13].TileType == 1)
+                {
+                    if (num10 == 0)
+                    {
+                        if (WorldGen.crimson)
+                        {
+                            Main.tile[num12, num13].TileType = TileID.Crimstone; 
+                        }
+                        else
+                        {
+                            Main.tile[num12, num13].TileType = TileID.Ebonstone;
+                        }
+                    }
+                    else
+                    {
+                        Main.tile[num12, num13].TileType = TileID.Pearlstone; 
+                    }
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        NetMessage.SendTileSquare(-1, num12, num13, 1, TileChangeType.None);
+                        break;
+                    }
+                    break;
+                }
+            }
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                int num14 = Main.rand.Next(2) + 1;
+                int npcID = Main.hardMode ? NPCID.Wraith : NPCID.Ghost;
+                for (int k = 0; k < num14; k++)
+                {
+                    
+                    NPC.SpawnOnPlayer((int)Player.FindClosest(Vector2.Zero, 16, 16), npcID);
+                }
+            }
+            WorldGen.altarCount++;
         }
     }
 }

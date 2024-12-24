@@ -81,8 +81,8 @@ namespace TerrariaChaosEditionUnleashed
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ACCUMULATING_VELOCITY))
             {
                 Vector2 velDiff = item.velocity - item.oldVelocity;
-                // 2x velocity change
-                item.velocity += velDiff * 0.05f;
+                item.velocity.X += velDiff.X * 0.075f;
+                item.velocity.Y += velDiff.Y * 0.0125f;
             }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.DISCRETIZED_MOVEMENT))
             {

@@ -38,57 +38,57 @@ namespace TerrariaChaosEditionUnleashed.Utility
         public void ApplyOverrideType(int type, int tileType, byte newValue)
         {
             overrideType = type;
-            tileType = type;
+            this.tileType = tileType;
             this.newValue = newValue;
             switch (overrideType)
             {
                 case (int)OverrideType.BOUNCY:
-                    this.oldValue = Main.tileBouncy[type] ? (byte)1 : (byte)0;
-                    Main.tileBouncy[type] = newValue != 0;
+                    this.oldValue = Main.tileBouncy[tileType] ? (byte)1 : (byte)0;
+                    Main.tileBouncy[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.REQUIRE_AXE:
-                    this.oldValue = Main.tileAxe[type] ? (byte)1 : (byte)0;
-                    Main.tileAxe[type] = newValue != 0;
+                    this.oldValue = Main.tileAxe[tileType] ? (byte)1 : (byte)0;
+                    Main.tileAxe[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.OPAQUE:
-                    this.oldValue = Main.tileBlockLight[type] ? (byte)1 : (byte)0;
-                    Main.tileBlockLight[type] = newValue != 0;
+                    this.oldValue = Main.tileBlockLight[tileType] ? (byte)1 : (byte)0;
+                    Main.tileBlockLight[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.CUTTABLE:
-                    this.oldValue = Main.tileCut[type] ? (byte)1 : (byte)0;
-                    Main.tileCut[type] = newValue != 0;
+                    this.oldValue = Main.tileCut[tileType] ? (byte)1 : (byte)0;
+                    Main.tileCut[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.REQUIRE_HAMMER:
-                    this.oldValue = Main.tileHammer[type] ? (byte)1 : (byte)0;
-                    Main.tileHammer[type] = newValue != 0;
+                    this.oldValue = Main.tileHammer[tileType] ? (byte)1 : (byte)0;
+                    Main.tileHammer[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.LAVA_DEATH:
-                    this.oldValue = Main.tileLavaDeath[type] ? (byte)1 : (byte)0;
-                    Main.tileLavaDeath[type] = newValue != 0;
+                    this.oldValue = Main.tileLavaDeath[tileType] ? (byte)1 : (byte)0;
+                    Main.tileLavaDeath[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.WATER_DEATH:
-                    this.oldValue = Main.tileWaterDeath[type] ? (byte)1 : (byte)0;
-                    Main.tileWaterDeath[type] = newValue != 0;
+                    this.oldValue = Main.tileWaterDeath[tileType] ? (byte)1 : (byte)0;
+                    Main.tileWaterDeath[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.CLIMBABLE:
-                    this.oldValue = Main.tileRope[type] ? (byte)1 : (byte)0;
-                    Main.tileRope[type] = newValue != 0;
+                    this.oldValue = Main.tileRope[tileType] ? (byte)1 : (byte)0;
+                    Main.tileRope[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.FALLS:
-                    this.oldValue = Main.tileSand[type] ? (byte)1 : (byte)0;
-                    Main.tileSand[type] = newValue != 0;
+                    this.oldValue = Main.tileSand[tileType] ? (byte)1 : (byte)0;
+                    Main.tileSand[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.SOLID:
-                    this.oldValue = Main.tileSolid[type] ? (byte)1 : (byte)0;
-                    Main.tileSolid[type] = newValue != 0;
+                    this.oldValue = Main.tileSolid[tileType] ? (byte)1 : (byte)0;
+                    Main.tileSolid[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.LIGHTSOURCE:
-                    this.oldValue = Main.tileLighted[type] ? (byte)1 : (byte)0;
-                    Main.tileLighted[type] = newValue != 0;
+                    this.oldValue = Main.tileLighted[tileType] ? (byte)1 : (byte)0;
+                    Main.tileLighted[tileType] = newValue != 0;
                     break;
                 case (int)OverrideType.PLATFORM:
-                    this.oldValue = Main.tileSolidTop[type] ? (byte)1 : (byte)0;
-                    Main.tileSolidTop[type] = newValue != 0;
+                    this.oldValue = Main.tileSolidTop[tileType] ? (byte)1 : (byte)0;
+                    Main.tileSolidTop[tileType] = newValue != 0;
                     break;
             }
         }

@@ -27,9 +27,9 @@ namespace TerrariaChaosEditionUnleashed
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.INVERSE_DE_BUFF))
             {
-                if(ChaosUtilities.reverseBuff.ContainsKey(type))
+                if (ChaosUtilities.reverseBuff.TryGetValue(type, out int outValue))
                 {
-                    type = ChaosUtilities.reverseBuff[type];
+                    type = outValue;
                 }
             }
             orig.Invoke(self, type, time, quiet);
@@ -40,9 +40,9 @@ namespace TerrariaChaosEditionUnleashed
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.INVERSE_DE_BUFF))
             {
-                if (ChaosUtilities.reverseBuff.ContainsKey(type))
+                if(ChaosUtilities.reverseBuff.TryGetValue(type, out int outValue))
                 {
-                    type = ChaosUtilities.reverseBuff[type];
+                    type = outValue;
                 }
             }
             orig.Invoke(self, type, timeToAdd, quiet, foodHack);

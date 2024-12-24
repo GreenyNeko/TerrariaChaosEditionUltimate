@@ -17,7 +17,11 @@ namespace TerrariaChaosEditionUnleashed
 {
     internal class ChaosTile : GlobalTile
     {
-        public List<TileOverride> tileOverrides = new List<TileOverride>();
+        // using dictioanry for O(1) access
+        /// <summary>For Specific tiles</summary>
+        public Dictionary<(int,int,int),TileOverride> tileOverrides = new Dictionary<(int,int,int),TileOverride>();
+        /// <summary>For all tiles of a type</summary>
+        public Dictionary<(int, int), TileOverride> tileTypeOverrides = new Dictionary<(int, int), TileOverride>();
         public override void DrawEffects(int i, int j, int type, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
@@ -34,10 +38,20 @@ namespace TerrariaChaosEditionUnleashed
                 }
                 drawData.tileLight = new Color(drawData.tileLight.R/255f * (float)red, drawData.tileLight.G/255f * (float)green, drawData.tileLight.B/255f *  (float)blue);
             }
+            
             base.DrawEffects(i, j, type, spriteBatch, ref drawData);
         }
 
-        
+        public override bool CanPlace(int i, int j, int type)
+        {
+            return base.CanPlace(i, j, type);
+        }
+
+        public override bool CanReplace(int i, int j, int type, int tileTypeBeingPlaced)
+        {
+            return base.CanReplace(i, j, type, tileTypeBeingPlaced);
+        }
+
 
         public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
         {
@@ -79,6 +93,7 @@ namespace TerrariaChaosEditionUnleashed
                     {
                         Main.tile[i, j].TileType = lookupTable[type][conversionType];
                     }
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RAND_TILE_CONVERT);
                 }
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.JUNGLE_GROWS))
@@ -128,6 +143,7 @@ namespace TerrariaChaosEditionUnleashed
             }
             base.DropCritterChance(i, j, type, ref wormChance, ref grassHopperChance, ref jungleGrubChance);
         }
+
 
         public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
@@ -185,13 +201,13 @@ namespace TerrariaChaosEditionUnleashed
                     chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.RECOLORED_TILES);
                 }
                 // already has overrides, but not this one
-                if(!tileOverrides.Any(to => to.overrideType == (int)OverrideType.COLOR && to.X == i && to.Y == j))
+                if(!tileOverrides.ContainsKey(((int)OverrideType.COLOR, i, j)))
                 {
                     TileOverride tileOverride = new TileOverride();
                     byte rand = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.RECOLORED_TILES, 0);
                     byte randColor = (byte)((rand * i * j * type) % 256);
                     tileOverride.ApplyOverrideTile((int)OverrideType.COLOR, i, j, Main.tile[i, j].TileColor, randColor);
-                    tileOverrides.Add(tileOverride);
+                    tileOverrides.Add(((int)OverrideType.COLOR, i, j),tileOverride);
                 }
             }
             /*if(tileOverrides.ContainsKey((i,j)))

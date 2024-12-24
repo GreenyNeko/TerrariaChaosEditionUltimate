@@ -4,12 +4,14 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
@@ -45,10 +47,6 @@ namespace TerrariaChaosEditionUnleashed
                     entity.immortal = true;
                 }
             }
-            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RECOLORED_NPCS))
-            {
-                entity.color = new Color(Main.rand.NextFloat(), Main.rand.NextFloat(), Main.rand.NextFloat());
-            }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RAND_NPC_FX))
             {
                 int flag = Main.rand.Next(128);
@@ -70,12 +68,29 @@ namespace TerrariaChaosEditionUnleashed
                 entity.spriteDirection = (flag & 1) == 1 ? Main.rand.Next(2) : entity.spriteDirection;
                 entity.teleporting = (flag & 2) == 2 ? true : entity.teleporting;
             }
-            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING))
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS))
             {
-                entity.noTileCollide = false;
-                entity.noGravity = false;
+                if (!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS))
+                {
+                    entity.boss = true;
+                    NpcFxData.Add((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS, new byte[] { 1 });
+                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS);
+                }
             }
             base.SetDefaults(entity);
+        }
+
+        public override void BossHeadSlot(NPC npc, ref int index)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS))
+            {
+                if(NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.ULTIMATE_BOSS))
+                {
+                    index = NPCID.Sets.BossHeadTextures[NPCID.EyeofCthulhu];
+                }
+            }
+            base.BossHeadSlot(npc, ref index);
         }
 
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
@@ -83,7 +98,7 @@ namespace TerrariaChaosEditionUnleashed
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.IMMENSE_SPAWN_RATE))
             {
-                spawnRate = 9001;
+                spawnRate = 1;
                 maxSpawns = 9001;
             }
             base.EditSpawnRate(player, ref spawnRate, ref maxSpawns);
@@ -110,26 +125,53 @@ namespace TerrariaChaosEditionUnleashed
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK))
             {
-                if (NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK))
+                if (!NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK))
                 {
                     NpcFxData.Add((int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK, new byte[] { (byte)Main.rand.Next(2) });
                 }
+
                 // map 0,1 -> 1,2 -> 4,8 -> -2,2 -> -1,1
                 npc.scale += 0.01f * ((NpcFxData[(int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK][0] + 1) * 4 - 6) / 2;
             }
+            
             return base.PreAI(npc);
         }
 
+        public override void AI(NPC npc)
+        {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ACCUMULATING_VELOCITY))
+            {
+                npc.velocity.X *= npc.noGravity ? 1.0125f : 1.0375f;
+                npc.velocity.Y *= 1.01f;
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING))
+            {
+                if (!NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING))
+                {
+                    byte noTileCollide = npc.noTileCollide ? (byte)1 : (byte)0;
+                    byte noGravity = npc.noGravity ? (byte)1 : (byte)0;
+                    NpcFxData.Add((int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING, new byte[] { noTileCollide, noGravity });
+                }
+                npc.noTileCollide = false;
+                npc.noGravity = false;
+            }
+            else
+            {
+                if (NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING))
+                {
+                    npc.noTileCollide = NpcFxData[(int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING][0] != 0; ;
+                    npc.noGravity = NpcFxData[(int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING][1] != 0;
+                    NpcFxData.Remove((int)ChaosManager.ChaosEffects.NO_FLYING_AND_WORMING);
+                }
+            }
+            base.AI(npc);
+        }
 
 
         public override void PostAI(NPC npc)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
-            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.ACCUMULATING_VELOCITY))
-            {
-                Vector2 velDiff = npc.velocity - npc.oldVelocity;
-                npc.velocity += velDiff * 0.05f;
-            }
             if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.DISCRETIZED_MOVEMENT))
             {
                 // TODO: which of these vars do we want to store in the effect?
@@ -227,25 +269,80 @@ namespace TerrariaChaosEditionUnleashed
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
-            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.SHADOW_ENEMIES))
+            Color originalNPCColor = npc.color;
+            byte[] data;
+            if (NpcFxData.TryGetValue((int)ChaosManager.ChaosEffects.RECOLORED_NPCS, out data)
+                || NpcFxData.TryGetValue((int)ChaosManager.ChaosEffects.SHADOW_ENEMIES, out data))
             {
-                drawColor = Color.Black;
+                originalNPCColor.R = data[0];
+                originalNPCColor.G = data[1];
+                originalNPCColor.B = data[2];
+                originalNPCColor.A = 0;
             }
-            if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.INVERTED_ENEMIES))
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RECOLORED_NPCS))
+            {
+                if(!NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.RECOLORED_NPCS))
+                {
+                    NpcFxData.Add((int)ChaosManager.ChaosEffects.RECOLORED_NPCS, 
+                            new byte[] { originalNPCColor.R, originalNPCColor.G, originalNPCColor.B, 
+                                (byte)Main.rand.Next(256), (byte)Main.rand.Next(256), (byte)Main.rand.Next(256)
+                        });
+                }
+                npc.color.R = NpcFxData[(int)ChaosManager.ChaosEffects.RECOLORED_NPCS][3];
+                npc.color.G = NpcFxData[(int)ChaosManager.ChaosEffects.RECOLORED_NPCS][4];
+                npc.color.B = NpcFxData[(int)ChaosManager.ChaosEffects.RECOLORED_NPCS][5];
+                npc.color.A = 255;
+            }
+            else
+            {
+                if(NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.RECOLORED_NPCS))
+                {
+                    npc.color.R = NpcFxData[(int)ChaosManager.ChaosEffects.RECOLORED_NPCS][0];
+                    npc.color.G = NpcFxData[(int)ChaosManager.ChaosEffects.RECOLORED_NPCS][1];
+                    npc.color.B = NpcFxData[(int)ChaosManager.ChaosEffects.RECOLORED_NPCS][2];
+                    npc.color.A = 0;
+                    NpcFxData.Remove((int)ChaosManager.ChaosEffects.RECOLORED_NPCS);
+                }
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.SHADOW_ENEMIES))
+            {
+                if (!NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.SHADOW_ENEMIES))
+                {
+                    NpcFxData.Add((int)ChaosManager.ChaosEffects.SHADOW_ENEMIES, new byte[] { originalNPCColor.R, originalNPCColor.G, originalNPCColor.B });
+                }
+                npc.color = Color.Black;
+            }
+            else
+            {
+                if (NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.SHADOW_ENEMIES))
+                {
+                    npc.color.R = NpcFxData[(int)ChaosManager.ChaosEffects.SHADOW_ENEMIES][0];
+                    npc.color.G = NpcFxData[(int)ChaosManager.ChaosEffects.SHADOW_ENEMIES][1];
+                    npc.color.B = NpcFxData[(int)ChaosManager.ChaosEffects.SHADOW_ENEMIES][2];
+                    npc.color.A = 0;
+                    NpcFxData.Remove((int)ChaosManager.ChaosEffects.SHADOW_ENEMIES);
+                }
+            }
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.INVERTED_ENEMIES))
             {
                 npc.rotation = MathF.PI;
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN))
             {
-                if(!chaosManager.IsEffectInitialDone((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN))
+                if(!NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN))
                 {
-                    chaosManager.WriteMetaDataByte((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN, (byte)Main.rand.Next(255), 0);
-                    chaosManager.FlagEffectAsInitalDone((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN);
+                    NpcFxData.Add((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN, new byte[] { (byte)Main.rand.Next(255) });
                 }
-                byte roll = chaosManager.ReadMetaDataByte((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN, 0);
-                int value = ((npc.type + 1) * (npc.netID + 1) * roll);
-                int direction = value % 2 == 0 ? 1 : -1;
-                npc.rotation += direction * value / 100f;
+                int rot = (int)NpcFxData[(int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN][0] - 127;
+                npc.rotation += rot / 127 * MathF.PI;
+            }
+            else
+            {
+                if (NpcFxData.ContainsKey((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN))
+                {
+                    npc.rotation = 0;
+                    NpcFxData.Remove((int)ChaosManager.ChaosEffects.NPC_SPIN_2_WIN);
+                }
             }
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RANDOM_NPC_SPRITES))
             {
@@ -265,6 +362,12 @@ namespace TerrariaChaosEditionUnleashed
 
         public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
         {
+            ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
+            if (chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK))
+            {
+                // swap
+                NpcFxData[(int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK][0] = NpcFxData[(int)ChaosManager.ChaosEffects.NPC_GROW_SHRINK][0] == 0 ? (byte)1 : (byte)0;
+            }
             base.ModifyIncomingHit(npc, ref modifiers);
         }
 
@@ -279,9 +382,9 @@ namespace TerrariaChaosEditionUnleashed
                 }
                 byte[] currDamageData = NpcFxData[(int)ChaosManager.ChaosEffects.SMASH_BROS];
                 short currDamage = BitConverter.ToInt16(currDamageData);
-                currDamage = Math.Max((short)currDamage, (short)(currDamage + damageDone / 10));
+                currDamage = Math.Max((short)currDamage, (short)(currDamage + damageDone));
                 NpcFxData[(int)ChaosManager.ChaosEffects.SMASH_BROS] = BitConverter.GetBytes(currDamage);
-                hit.Knockback *= (1 + currDamage / 100f);
+                hit.Knockback *= (1 + currDamage / 1000f);
             }
             base.OnHitByItem(npc, player, item, hit, damageDone);
         }
@@ -309,7 +412,7 @@ namespace TerrariaChaosEditionUnleashed
             ChaosManager chaosManager = ModContent.GetInstance<ChaosSystem>().manager;
             if(chaosManager.IsEffectActive((int)ChaosManager.ChaosEffects.RAND_ENEMY_FX_II))
             {
-                int fx = Main.rand.Next(3);
+                int fx = Main.rand.Next(9);
                 if(fx == 0) // drop explosive
                 {
                     int[] explosiveType = { 
